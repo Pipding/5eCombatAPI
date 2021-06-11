@@ -1,0 +1,8 @@
+﻿  Gameover.cpp
+C:\Users\Ryan\source\repos\Gameover\Gameover\Gameover.cpp(57,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Ryan\source\repos\Gameover\Gameover\Gameover.cpp(62,47): warning C4018: '>=': signed/unsigned mismatch
+C:\Users\Ryan\source\repos\Gameover\Gameover\Gameover.cpp(158,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Ryan\source\repos\Gameover\Gameover\Gameover.cpp(364,55): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Ryan\source\repos\Gameover\Gameover\Gameover.cpp(471,15): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\Ryan\source\repos\Gameover\Gameover\Gameover.cpp(474,10): warning C4101: 'continueWithConcentratedSpell': unreferenced local variable
+  Gameover.vcxproj -> C:\Users\Ryan\source\repos\Gameover\Debug\Gameover.exe
