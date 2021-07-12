@@ -1,3 +1,6 @@
 #pragma once
 
-enum WeaponCategory { simple, martial };
+namespace Weapons
+{
+	enum WeaponCategory { simple, martial };
+}

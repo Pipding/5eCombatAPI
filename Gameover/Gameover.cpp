@@ -13,6 +13,7 @@
 #include "enums/e_WeaponProperty.h"
 #include "enums/e_WeaponCategory.h"
 #include "classes/Spell.h"
+#include "classes/Weapon.h"
 
 struct Character;
 
@@ -164,23 +165,6 @@ struct IndividuatedDiceRoll
     }
 };
 
-struct Weapon
-{
-    std::string name;
-    bool isRanged;
-    WeaponCategory category;
-    std::string damage;
-    DamageType damageType;
-    std::vector<WeaponProperty> properties;
-
-    inline bool operator==(Weapon a) {
-        if (a.name == this->name && a.isRanged == this->isRanged && a.category == this->category && a.damage == this->damage && a.damageType == this->damageType)
-            return true;
-        else
-            return false;
-    }
-};
-
 struct Character
 {
     //CharacterClass characterClass;
@@ -188,8 +172,8 @@ struct Character
 
     std::map<Ability, int> abilityScores;
     int proficiencyBonus;
-    std::vector<WeaponCategory> weaponCategoryProficiencies;
-    std::vector<Weapon> weaponProficiencies;
+    std::vector<Weapons::WeaponCategory> weaponCategoryProficiencies;
+    std::vector<Weapons::Weapon> weaponProficiencies;
     Spell concentratedSpell;
     int concentratedSpellCastLevel;
 
@@ -222,7 +206,7 @@ struct Character
         return 8 + getAbilityModifier(spellcastingAbility) + proficiencyBonus;
     }
 
-    bool isProficientWithWeapon(Weapon weapon)
+    bool isProficientWithWeapon(Weapons::Weapon weapon)
     {
         bool characterProficientWithWeaponCategory = false;
         bool characterProficientWithWeapon = false;
@@ -438,14 +422,14 @@ int main()
     bool areEnemiesWithin5Feet = false;
     bool attackWithMagic = false;
     Ability attackAbility;
-    Weapon selectedWeapon;
+    Weapons::Weapon selectedWeapon;
     Spell selectedSpell;
     int attackRollDiceResult;
     int attackAbilityModifier;
     int attackRoll;
 
     //Weapons
-    std::vector<Weapon> weapons;
+    std::vector<Weapons::Weapon> weapons;
     std::vector<std::string> weaponNames;
 
     Character character = {};
@@ -459,34 +443,34 @@ int main()
     character.proficiencyBonus = 2;
 
 
-    Weapon dagger = {};
+    Weapons::Weapon dagger = {};
     dagger.name = "Dagger";
     dagger.isRanged = false;
-    dagger.category = simple;
+    dagger.category = Weapons::WeaponCategory::simple;
     dagger.damage = "1d4";
     dagger.damageType = piercing;
-    dagger.properties.push_back(finesse);
-    dagger.properties.push_back(light);
-    dagger.properties.push_back(range);
-    dagger.properties.push_back(thrown);
+    dagger.properties.push_back(Weapons::WeaponProperty::finesse);
+    dagger.properties.push_back(Weapons::WeaponProperty::light);
+    dagger.properties.push_back(Weapons::WeaponProperty::range);
+    dagger.properties.push_back(Weapons::WeaponProperty::thrown);
 
-    Weapon rapier= {};
+    Weapons::Weapon rapier= {};
     rapier.name = "Rapier";
     rapier.isRanged = false;
-    rapier.category = martial;
+    rapier.category = Weapons::WeaponCategory::martial;
     rapier.damage = "1d8";
     rapier.damageType = piercing;
-    rapier.properties.push_back(finesse);
+    rapier.properties.push_back(Weapons::WeaponProperty::finesse);
 
-    Weapon light_crossbow = {};
+    Weapons::Weapon light_crossbow = {};
     light_crossbow.name = "Light Crossbow";
     light_crossbow.isRanged = true;
-    light_crossbow.category = simple;
+    light_crossbow.category = Weapons::WeaponCategory::simple;
     light_crossbow.damage = "1d8";
     light_crossbow.damageType = piercing;
-    light_crossbow.properties.push_back(loading);
-    light_crossbow.properties.push_back(range);
-    light_crossbow.properties.push_back(two_handed);
+    light_crossbow.properties.push_back(Weapons::WeaponProperty::loading);
+    light_crossbow.properties.push_back(Weapons::WeaponProperty::range);
+    light_crossbow.properties.push_back(Weapons::WeaponProperty::two_handed);
 
     weapons.push_back(dagger);
     weapons.push_back(rapier);
@@ -602,7 +586,7 @@ int main()
                 }
 
                 //Does weapon have finesse attribute?
-                if (std::find(selectedWeapon.properties.begin(), selectedWeapon.properties.end(), finesse) != selectedWeapon.properties.end())
+                if (std::find(selectedWeapon.properties.begin(), selectedWeapon.properties.end(), Weapons::WeaponProperty::finesse) != selectedWeapon.properties.end())
                 {
                     Ability finesseAbilities[2] = { Ability::strength, Ability::dexterity };
                     std::vector<std::string> finesseAbilityNames = { "Strength", "Dexterity" };
