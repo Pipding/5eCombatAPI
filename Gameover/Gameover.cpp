@@ -6,13 +6,22 @@
 #include <cctype>
 #include <functional>
 
-enum CharacterClass { barbarian, bard, cleric, druid, fighter, monk, paladin, ranger, rogue, sorcerer, warlock, wizard };
-enum WeaponType { melee, ranged };
-enum WeaponCategory { simple, martial };
-enum WeaponProperty { ammunition, finesse, heavy, light, loading, range, reach, special, thrown, two_handed, versatile };
-enum DamageType { acid, bludgeoning, cold, fire, force, lightning, necrotic, piercing, poison, psychic, radiant, slashing, thunder };
-enum SpellComponent { verbal, somatic, material };
-enum Ability { strength, dexterity, constitution, intelligence, wisdom, charisma };
+#include "enums/e_Ability.h"
+#include "enums/e_CharacterClass.h"
+#include "enums/e_SpellComponent.h"
+#include "enums/e_DamageType.h"
+#include "enums/e_WeaponProperty.h"
+#include "enums/e_WeaponCategory.h"
+
+
+
+//enum WeaponType { melee, ranged };
+//enum WeaponCategory { simple, martial };
+//enum WeaponProperty { ammunition, finesse, heavy, light, loading, range, reach, special, thrown, two_handed, versatile };
+//enum DamageType { acid, bludgeoning, cold, fire, force, lightning, necrotic, piercing, poison, psychic, radiant, slashing, thunder };
+//enum SpellComponent { verbal, somatic, material };
+//enum Ability { strength, dexterity, constitution, intelligence, wisdom, charisma };
+//enum CharacterClass { barbarian, bard, cleric, druid, fighter, monk, paladin, ranger, rogue, sorcerer, warlock, wizard };
 
 std::map<Ability, std::string> AbilityName
 {
@@ -204,14 +213,14 @@ struct Spell
 struct Weapon
 {
     std::string name;
-    WeaponType type;
+    bool isRanged;
     WeaponCategory category;
     std::string damage;
     DamageType damageType;
     std::vector<WeaponProperty> properties;
 
     inline bool operator==(Weapon a) {
-        if (a.name == this->name && a.type == this->type && a.category == this->category && a.damage == this->damage && a.damageType == this->damageType)
+        if (a.name == this->name && a.isRanged == this->isRanged && a.category == this->category && a.damage == this->damage && a.damageType == this->damageType)
             return true;
         else
             return false;
@@ -498,7 +507,7 @@ int main()
 
     Weapon dagger = {};
     dagger.name = "Dagger";
-    dagger.type = melee;
+    dagger.isRanged = false;
     dagger.category = simple;
     dagger.damage = "1d4";
     dagger.damageType = piercing;
@@ -509,7 +518,7 @@ int main()
 
     Weapon rapier= {};
     rapier.name = "Rapier";
-    rapier.type = melee;
+    rapier.isRanged = false;
     rapier.category = martial;
     rapier.damage = "1d8";
     rapier.damageType = piercing;
@@ -517,7 +526,7 @@ int main()
 
     Weapon light_crossbow = {};
     light_crossbow.name = "Light Crossbow";
-    light_crossbow.type = ranged;
+    light_crossbow.isRanged = true;
     light_crossbow.category = simple;
     light_crossbow.damage = "1d8";
     light_crossbow.damageType = piercing;
@@ -629,7 +638,7 @@ int main()
                 std::cout << "Attacking with " << selectedWeapon.name << " ...\n";
 
                 //Set as defaults
-                if (selectedWeapon.type == melee)
+                if (!selectedWeapon.isRanged)
                 {
                     attackAbility = strength;
                 }
@@ -655,13 +664,13 @@ int main()
                     attackAbility = finesseAbilities[userInputChoice(finesseAbilityNames)];
                 }
 
-                if (selectedWeapon.type == ranged)
+                if (selectedWeapon.isRanged)
                 {
                     std::cout << "Are there any enemies within 5' of you? (Y/N)\n";
                     areEnemiesWithin5Feet = userInputYesNo();
                 }
 
-                if (selectedWeapon.type == ranged && areEnemiesWithin5Feet)
+                if (selectedWeapon.isRanged && areEnemiesWithin5Feet)
                 {
                     std::cout << "Rolling to attack with disadvantage\n";
                     attackRollDiceResult = rollDiceWithDisadvantage("1d20");

@@ -141,6 +141,14 @@
   <ItemGroup>
     <ClCompile Include="Gameover.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="enums\e_DamageType.h" />
+    <ClInclude Include="enums\e_Ability.h" />
+    <ClInclude Include="enums\e_CharacterClass.h" />
+    <ClInclude Include="enums\e_SpellComponent.h" />
+    <ClInclude Include="enums\e_WeaponCategory.h" />
+    <ClInclude Include="enums\e_WeaponProperty.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

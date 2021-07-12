@@ -1,0 +1,9 @@
+**/Debug
+**/Gameover/Debug
+*.pdb
+*.log
+*.tlog
+*.idb
+*.vcxproj.filters
+*.vcxproj.user
+.vs
