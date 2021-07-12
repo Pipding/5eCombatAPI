@@ -17,72 +17,7 @@
 #include "classes/Character.cpp"
 #include "data/SpellSlotMaximum.h"
 #include "chance/Dice.h"
-
-
-
-bool is_number(const std::string& s)
-{
-    std::string::const_iterator it = s.begin();
-    while (it != s.end() && std::isdigit(*it)) ++it;
-    return !s.empty() && it == s.end();
-}
-
-bool userInputYesNo()
-{
-    std::vector<std::string> acceptableResponses = { "y", "yes", "n", "no" };
-    std::string userInputStr = "nil";
-
-    std::transform(userInputStr.begin(), userInputStr.end(), userInputStr.begin(),
-        [](unsigned char c) { return std::tolower(c); });
-
-    while (std::find(acceptableResponses.begin(), acceptableResponses.end(), userInputStr) == acceptableResponses.end())
-    {
-        std::cin >> userInputStr;
-    }
-
-    return userInputStr == "y" || userInputStr == "yes";
-}
-
-int userInputChoice(std::vector<std::string> choices)
-{
-    std::string userInputStr;
-    int userSelection = -1;
-    for (int i = 0; i < choices.size(); i++)
-    {
-        std::cout << i << ": " << choices[i] << "\n";
-    }
-
-    while (userSelection < 0 || userSelection >= choices.size())
-    {
-        std::cin >> userInputStr;
-
-        if (is_number(userInputStr))
-        {
-            userSelection = atoi(userInputStr.c_str());
-        }
-    }
-
-    return userSelection;
-}
-
-int userInputIntInRange(int min, int max)
-{
-    std::string userInputStr;
-    int userInputInt;
-
-    do {
-        do {
-            std::cin >> userInputStr;
-        } while (!is_number(userInputStr));
-
-        userInputInt = atoi(userInputStr.c_str());
-
-    } while (userInputInt < min || userInputInt > max);
-
-    return userInputInt;
-
-}
-
+#include "input/CmdInput.h"
 
 void castWitchBolt(Spell spell, Characters::Character& character) 
 {
@@ -93,10 +28,10 @@ void castWitchBolt(Spell spell, Characters::Character& character)
     else
     {
         std::cout << "Are there any enemies within 5' of you? (Y/N)\n";
-        int attackRoll = character.rangedSpellAttack(userInputYesNo());
+        int attackRoll = character.rangedSpellAttack(Characters::userInputYesNo());
 
         std::cout << "Rolled " << attackRoll << " to attack\n" << "Hit? (Y/N)" << "\n";
-        if (userInputYesNo())
+        if (Characters::userInputYesNo())
         {
             int damageRoll = 0;
 
@@ -130,10 +65,10 @@ void castMagicMissile(Spell spell, Characters::Character& character)
 void castIceKnife(Spell spell, Characters::Character& character)
 {
     std::cout << "Are there any enemies within 5' of you? (Y/N)\n";
-    int attackRoll = character.rangedSpellAttack(userInputYesNo());
+    int attackRoll = character.rangedSpellAttack(Characters::userInputYesNo());
 
     std::cout << "Rolled " << attackRoll << " to attack\n" << "Hit? (Y/N)" << "\n";
-    if (userInputYesNo())
+    if (Characters::userInputYesNo())
     {
         std::cout << "Target takes " << Chance::rollDice("1d10") << " piercing damage\n";
         std::cout << "Target and all creatures within 5\' of target must beat a dexterity save of " << character.getSpellSaveDc() << " or take " << Chance::rollDice(std::to_string(character.concentratedSpellCastLevel + 1) + "d6") << " cold damage\n";
@@ -143,10 +78,10 @@ void castIceKnife(Spell spell, Characters::Character& character)
 void castRayOfFrost(Spell spell, Characters::Character& character)
 {
     std::cout << "Are there any enemies within 5' of you? (Y/N)\n";
-    int attackRoll = character.rangedSpellAttack(userInputYesNo());
+    int attackRoll = character.rangedSpellAttack(Characters::userInputYesNo());
 
     std::cout << "Rolled " << attackRoll << " to attack\n" << "Hit? (Y/N)" << "\n";
-    if (userInputYesNo())
+    if (Characters::userInputYesNo())
     {
         std::cout << "Target takes " << Chance::rollDice("1d8") << " cold damage and speed is reduced by 10\' until next turn\n";
     }
@@ -157,6 +92,22 @@ int main()
 {
     
     srand(time(NULL));
+
+    //UuUuUuUUuuUuUuuUuuuuUUUUUu
+
+    std::map<int, int> diceResults;
+
+    for (int i = 0; i < 10000000; i++)
+    {
+        diceResults[Chance::rollDice("1d20")] += 1;
+    }
+
+    //std::cout << diceResults;
+
+    for (auto const& pair : diceResults) {
+        std::cout << "{" << pair.first << ": " << pair.second << "}\n";
+    }
+
 
     bool running = true;
     bool continueWithConcentratedSpell;
@@ -293,7 +244,7 @@ int main()
         if (character.concentratedSpell == witch_bolt)
         {
             std::cout << "You're concentrating on " << character.concentratedSpell.name << ". Would you like to continue doing so?(Y/N)\n";
-            bool continueWithConcentratedSpell = userInputYesNo();
+            bool continueWithConcentratedSpell = Characters::userInputYesNo();
 
             if (continueWithConcentratedSpell)
             {
@@ -307,12 +258,12 @@ int main()
         else
         {
             std::cout << "What kind of attack is this?\n";
-            attackWithMagic = userInputChoice({ "Mundane", "Magic" });
+            attackWithMagic = Characters::userInputChoice({ "Mundane", "Magic" });
 
             if (!attackWithMagic)
             {
                 std::cout << "Choose a weapon\n";
-                selectedWeapon = weapons[userInputChoice(weaponNames)];
+                selectedWeapon = weapons[Characters::userInputChoice(weaponNames)];
                 std::cout << "Attacking with " << selectedWeapon.name << " ...\n";
 
                 //Set as defaults
@@ -339,13 +290,13 @@ int main()
 
                     std::cout << selectedWeapon.name << " is a finesse weapon, would you like to use strength(" << strModText << ") or dexterity(" << dexModText << ")?\n";
 
-                    attackAbility = finesseAbilities[userInputChoice(finesseAbilityNames)];
+                    attackAbility = finesseAbilities[Characters::userInputChoice(finesseAbilityNames)];
                 }
 
                 if (selectedWeapon.isRanged)
                 {
                     std::cout << "Are there any enemies within 5' of you? (Y/N)\n";
-                    areEnemiesWithin5Feet = userInputYesNo();
+                    areEnemiesWithin5Feet = Characters::userInputYesNo();
                 }
 
                 if (selectedWeapon.isRanged && areEnemiesWithin5Feet)
@@ -375,7 +326,7 @@ int main()
 
                 std::cout << "Rolled " << attackRoll << " to attack\n" << "Hit? (Y/N)" << "\n";
 
-                if (userInputYesNo())
+                if (Characters::userInputYesNo())
                 {
                     std::cout << "Rolling damage\n";
                     int damageRoll = Chance::rollDice(selectedWeapon.damage);
@@ -390,7 +341,7 @@ int main()
             else
             {
                 std::cout << "Choose a spell\n";
-                selectedSpell = spells[userInputChoice(spellNames)];
+                selectedSpell = spells[Characters::userInputChoice(spellNames)];
 
                 if (!character.castSpell(selectedSpell))
                 {

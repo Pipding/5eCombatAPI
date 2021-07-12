@@ -155,6 +155,7 @@
     <ClInclude Include="enums\e_SpellComponent.h" />
     <ClInclude Include="enums\e_WeaponCategory.h" />
     <ClInclude Include="enums\e_WeaponProperty.h" />
+    <ClInclude Include="input\CmdInput.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

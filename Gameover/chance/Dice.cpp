@@ -1,9 +1,23 @@
 #include "Dice.h"
-#include <map>
-#include <vector>
 
 namespace Chance
 {
+    static unsigned long x = 123456789, y = 362436069, z = 521288629;
+
+    unsigned long xorshf96(void) {          //period 2^96-1
+        unsigned long t;
+        x ^= x << 16;
+        x ^= x >> 5;
+        x ^= x << 1;
+
+        t = x;
+        x = y;
+        y = z;
+        z = t ^ x ^ y;
+
+        return z;
+    }
+
     static int rollDice(std::string diceRollString)
     {
         int plusNumber = 0;
@@ -23,7 +37,9 @@ namespace Chance
 
         for (int i = 0; i < diceQuantity; i++)
         {
-            totalDiceRoll += (rand() % diceType + 1);
+
+            //totalDiceRoll += (rand() % diceType + 1);
+            totalDiceRoll += (xorshf96() % diceType + 1);
         }
 
         return totalDiceRoll + plusNumber;
@@ -39,51 +55,44 @@ namespace Chance
 		return std::min(rollDice(diceRollString), rollDice(diceRollString));
 	}
 
-    struct IndividuatedDiceRoll
+    IndividuatedDiceRoll::IndividuatedDiceRoll(int p_numberOfDice, int p_sizeOfDice, int p_plusNumber)
     {
-        std::map<int, int> rolls;
+        numberOfDice = p_numberOfDice;
+        sizeOfDice = p_sizeOfDice;
+        plusNumber = p_plusNumber;
 
-        int numberOfDice;
-        int sizeOfDice;
-        int plusNumber;
+        rolls = {};
 
-        IndividuatedDiceRoll(int p_numberOfDice, int p_sizeOfDice, int p_plusNumber)
+        reroll();
+    }
+
+    void IndividuatedDiceRoll::reroll()
+    {
+        rolls = {};
+
+        for (int i = 0; i < numberOfDice; ++i)
         {
-            numberOfDice = p_numberOfDice;
-            sizeOfDice = p_sizeOfDice;
-            plusNumber = p_plusNumber;
+            rolls.insert({ i, rollDice("1d" + std::to_string(sizeOfDice) + "+" + std::to_string(plusNumber)) });
+        }
+    }
 
-            reroll();
+    void IndividuatedDiceRoll::rerollSpecificDice(std::vector<int> diceIndices)
+    {
+        for (int i = 0; i < diceIndices.size(); ++i)
+        {
+            rolls[diceIndices[i]] = rollDice("1d" + std::to_string(sizeOfDice) + "+" + std::to_string(plusNumber));
+        }
+    }
+
+    std::string IndividuatedDiceRoll::print()
+    {
+        std::string prettyPrintString = "";
+
+        for (int i = 0; i < numberOfDice; ++i)
+        {
+            prettyPrintString += ("Die " + std::to_string(i + 1) + ": " + std::to_string(rolls[i]) + "\n");
         }
 
-        void reroll()
-        {
-            rolls = {};
-
-            for (int i = 0; i < numberOfDice; ++i)
-            {
-                rolls.insert({ i, rollDice("1d" + std::to_string(sizeOfDice) + "+" + std::to_string(plusNumber)) });
-            }
-        }
-
-        void rerollSpecificDice(std::vector<int> diceIndices)
-        {
-            for (int i = 0; i < diceIndices.size(); ++i)
-            {
-                rolls[diceIndices[i]] = rollDice("1d" + std::to_string(sizeOfDice) + "+" + std::to_string(plusNumber));
-            }
-        }
-
-        std::string print()
-        {
-            std::string prettyPrintString = "";
-
-            for (int i = 0; i < numberOfDice; ++i)
-            {
-                prettyPrintString += ("Die " + std::to_string(i + 1) + ": " + std::to_string(rolls[i]) + "\n");
-            }
-
-            return prettyPrintString;
-        }
-    };
+        return prettyPrintString;
+    }
 }

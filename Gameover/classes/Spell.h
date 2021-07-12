@@ -5,6 +5,8 @@
 #include "..\enums\e_SpellComponent.h"
 #include "Character.h"
 
+struct Character;
+
 struct Spell
 {
     std::string name;
