@@ -14,24 +14,15 @@
 #include "enums/e_WeaponCategory.h"
 
 
-
-//enum WeaponType { melee, ranged };
-//enum WeaponCategory { simple, martial };
-//enum WeaponProperty { ammunition, finesse, heavy, light, loading, range, reach, special, thrown, two_handed, versatile };
-//enum DamageType { acid, bludgeoning, cold, fire, force, lightning, necrotic, piercing, poison, psychic, radiant, slashing, thunder };
-//enum SpellComponent { verbal, somatic, material };
-//enum Ability { strength, dexterity, constitution, intelligence, wisdom, charisma };
-//enum CharacterClass { barbarian, bard, cleric, druid, fighter, monk, paladin, ranger, rogue, sorcerer, warlock, wizard };
-
-std::map<Ability, std::string> AbilityName
-{
-    { strength, "Strength" }, 
-    { dexterity, "Dexterity" },
-    { constitution, "Constitution" },
-    { intelligence, "Intelligence" },
-    { wisdom, "Wisdom" },
-    { charisma, "Charisma" }
-};
+//std::map<Ability, std::string> AbilityName
+//{
+//    { strength, "Strength" }, 
+//    { dexterity, "Dexterity" },
+//    { constitution, "Constitution" },
+//    { intelligence, "Intelligence" },
+//    { wisdom, "Wisdom" },
+//    { charisma, "Charisma" }
+//};
 
 struct Character;
 
@@ -353,7 +344,7 @@ struct Character
 
         if (sorcererPoints > 0)
         {
-            int maxRerollableDice = std::min(getAbilityModifier(charisma), p_numberOfDice);
+            int maxRerollableDice = std::min(getAbilityModifier(Ability::charisma), p_numberOfDice);
             //TODO: Actually check if the character has Empowered Spell
             std::cout << damageRolls.print() << "\n";
             std::cout << "Use Empowered Spell to reroll up to " << maxRerollableDice << " damage dice? (Y/N)\n";
@@ -495,13 +486,13 @@ int main()
     std::vector<std::string> weaponNames;
 
     Character character = {};
-    character.spellcastingAbility = charisma;
-    character.abilityScores[strength] = 15;
-    character.abilityScores[dexterity] = 12;
-    character.abilityScores[constitution] = 15;
-    character.abilityScores[intelligence] = 12;
-    character.abilityScores[wisdom] = 10;
-    character.abilityScores[charisma] = 18;
+    character.spellcastingAbility = Ability::charisma;
+    character.abilityScores[Ability::strength] = 15;
+    character.abilityScores[Ability::dexterity] = 12;
+    character.abilityScores[Ability::constitution] = 15;
+    character.abilityScores[Ability::intelligence] = 12;
+    character.abilityScores[Ability::wisdom] = 10;
+    character.abilityScores[Ability::charisma] = 18;
     character.proficiencyBonus = 2;
 
 
@@ -640,21 +631,21 @@ int main()
                 //Set as defaults
                 if (!selectedWeapon.isRanged)
                 {
-                    attackAbility = strength;
+                    attackAbility = Ability::strength;
                 }
                 else
                 {
-                    attackAbility = dexterity;
+                    attackAbility = Ability::dexterity;
                 }
 
                 //Does weapon have finesse attribute?
                 if (std::find(selectedWeapon.properties.begin(), selectedWeapon.properties.end(), finesse) != selectedWeapon.properties.end())
                 {
-                    Ability finesseAbilities[2] = { strength, dexterity };
+                    Ability finesseAbilities[2] = { Ability::strength, Ability::dexterity };
                     std::vector<std::string> finesseAbilityNames = { "Strength", "Dexterity" };
 
-                    int strMod = character.getAbilityModifier(strength);
-                    int dexMod = character.getAbilityModifier(dexterity);
+                    int strMod = character.getAbilityModifier(Ability::strength);
+                    int dexMod = character.getAbilityModifier(Ability::dexterity);
 
                     std::string strModText = (strMod <= 0) ? (std::to_string(strMod)) : ("+" + std::to_string(strMod));
                     std::string dexModText = (dexMod <= 0) ? (std::to_string(dexMod)) : ("+" + std::to_string(dexMod));
@@ -685,7 +676,7 @@ int main()
 
                 attackAbilityModifier = character.getAbilityModifier(attackAbility);
 
-                std::cout << "Adding " << AbilityName[attackAbility] << " mod of " << attackAbilityModifier << "\n";
+                std::cout << "Adding " << Ability_str(attackAbility) << " mod of " << attackAbilityModifier << "\n";
 
                 attackRoll = (attackRollDiceResult + attackAbilityModifier);
 
@@ -703,7 +694,7 @@ int main()
                     int damageRoll = rollDice(selectedWeapon.damage);
                     std::cout << "Rolled " << damageRoll << "\n";
 
-                    std::cout << "Adding " << AbilityName[attackAbility] << " modifier\n";
+                    std::cout << "Adding " << Ability_str(attackAbility) << " modifier\n";
                     damageRoll += attackAbilityModifier;
 
                     std::cout << damageRoll << " damage\n";
