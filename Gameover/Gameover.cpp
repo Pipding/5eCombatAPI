@@ -12,17 +12,7 @@
 #include "enums/e_DamageType.h"
 #include "enums/e_WeaponProperty.h"
 #include "enums/e_WeaponCategory.h"
-
-
-//std::map<Ability, std::string> AbilityName
-//{
-//    { strength, "Strength" }, 
-//    { dexterity, "Dexterity" },
-//    { constitution, "Constitution" },
-//    { intelligence, "Intelligence" },
-//    { wisdom, "Wisdom" },
-//    { charisma, "Charisma" }
-//};
+#include "classes/Spell.h"
 
 struct Character;
 
@@ -171,33 +161,6 @@ struct IndividuatedDiceRoll
         }
 
         return prettyPrintString;
-    }
-};
-
-struct Spell
-{
-    std::string name;
-    int level;
-    int castingTime;
-    int range;
-    std::vector<SpellComponent> components;
-    int duration;
-    bool requiresConcentration;
-
-    void(*cast)(Spell, Character&);
-    
-    inline bool operator==(Spell a) {
-        if (a.name == this->name)
-            return true;
-        else
-            return false;
-    }
-
-    inline bool operator!=(Spell a) {
-        if (a.name != this->name)
-            return true;
-        else
-            return false;
     }
 };
 

@@ -142,6 +142,7 @@
     <ClCompile Include="Gameover.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="classes\Spell.h" />
     <ClInclude Include="enums\e_DamageType.h" />
     <ClInclude Include="enums\e_Ability.h" />
     <ClInclude Include="enums\e_CharacterClass.h" />
