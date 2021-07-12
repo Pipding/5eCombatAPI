@@ -14,6 +14,7 @@
 #include "enums/e_WeaponCategory.h"
 #include "classes/Spell.h"
 #include "classes/Weapon.h"
+#include "data/SpellSlotMaximum.h"
 
 struct Character;
 
@@ -180,17 +181,7 @@ struct Character
     int level1SpellSlotMax = 4;
     int level2SpellSlotMax = 2;
 
-    std::map<int, int> spellSlots = {
-        {1, 4},
-        {2, 2},
-        {3, 0},
-        {4, 0},
-        {5, 0},
-        {6, 0},
-        {7, 0},
-        {8, 0},
-        {9, 0}
-    };
+    std::map<int, int> spellSlots = SpellCasting::MaximumSpellPoints::Sorcerer[3];
 
     int sorcererPoints = 3;
 
@@ -545,7 +536,6 @@ int main()
     //Character
     character.weaponProficiencies.push_back(dagger);
     character.weaponProficiencies.push_back(light_crossbow);
-
 
 
     while (running)
