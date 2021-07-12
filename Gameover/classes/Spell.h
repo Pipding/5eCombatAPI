@@ -3,8 +3,7 @@
 #include <vector>
 
 #include "..\enums\e_SpellComponent.h"
-
-struct Character;
+#include "Character.h"
 
 struct Spell
 {
@@ -16,7 +15,8 @@ struct Spell
     int duration;
     bool requiresConcentration;
 
-    void(*cast)(Spell, Character&);
+    //TODO: Refactor, spells shouldn't know about Characters. Other way around.
+    void(*cast)(Spell, Characters::Character&);
 
     inline bool operator==(Spell a) {
         if (a.name == this->name)

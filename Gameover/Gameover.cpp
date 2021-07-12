@@ -14,9 +14,10 @@
 #include "enums/e_WeaponCategory.h"
 #include "classes/Spell.h"
 #include "classes/Weapon.h"
+#include "classes/Character.cpp"
 #include "data/SpellSlotMaximum.h"
+#include "chance/Dice.h"
 
-struct Character;
 
 
 bool is_number(const std::string& s)
@@ -82,263 +83,12 @@ int userInputIntInRange(int min, int max)
 
 }
 
-int rollDice(std::string diceRollString)
-{
-    int plusNumber = 0;
-    int diceType = 0;
-    int diceQuantity = 0;
-    int totalDiceRoll = 0;
 
-    if (diceRollString.find('+') != std::string::npos)
-    {
-        plusNumber = atoi(diceRollString.substr(diceRollString.find("+") + 1).c_str());
-        diceRollString = diceRollString.substr(0, diceRollString.find("+"));
-    }
-
-    diceType = atoi(diceRollString.substr(diceRollString.find("d") + 1).c_str());
-    diceRollString = diceRollString.substr(0, diceRollString.find("d"));
-    diceQuantity= atoi(diceRollString.c_str());
-
-    for (int i = 0; i < diceQuantity; i++)
-    {
-        totalDiceRoll += (rand() % diceType + 1);
-    }
-
-    return totalDiceRoll + plusNumber;
-}
-
-int rollDiceWithAdvantage(std::string diceRollString)
-{
-    return std::max(rollDice(diceRollString), rollDice(diceRollString));
-}
-
-int rollDiceWithDisadvantage(std::string diceRollString)
-{
-    return std::min(rollDice(diceRollString), rollDice(diceRollString));
-}
-
-//Maybe have a different thing called a SummedDiceRoll
-struct IndividuatedDiceRoll
-{
-    std::map<int, int> rolls;
-
-    int numberOfDice;
-    int sizeOfDice;
-    int plusNumber;
-
-    IndividuatedDiceRoll(int p_numberOfDice, int p_sizeOfDice, int p_plusNumber)
-    {
-        numberOfDice = p_numberOfDice;
-        sizeOfDice = p_sizeOfDice;
-        plusNumber = p_plusNumber;
-
-        reroll();
-    }
-
-    void reroll()
-    {
-        rolls = {};
-
-        for (int i = 0; i < numberOfDice; ++i)
-        {
-            rolls.insert({ i, rollDice("1d" + std::to_string(sizeOfDice) + "+" + std::to_string(plusNumber)) });
-        }
-    }
-
-    void rerollSpecificDice(std::vector<int> diceIndices)
-    {
-        for (int i = 0; i < diceIndices.size(); ++i)
-        {
-            rolls[diceIndices[i]] = rollDice("1d" + std::to_string(sizeOfDice) + "+" + std::to_string(plusNumber));
-        }
-    }
-
-    std::string print()
-    {
-        std::string prettyPrintString = "";
-
-        for (int i = 0; i < numberOfDice; ++i)
-        {
-            prettyPrintString += ("Die " + std::to_string(i+1) + ": " + std::to_string(rolls[i]) + "\n" );
-        }
-
-        return prettyPrintString;
-    }
-};
-
-struct Character
-{
-    //CharacterClass characterClass;
-    Ability spellcastingAbility;
-
-    std::map<Ability, int> abilityScores;
-    int proficiencyBonus;
-    std::vector<Weapons::WeaponCategory> weaponCategoryProficiencies;
-    std::vector<Weapons::Weapon> weaponProficiencies;
-    Spell concentratedSpell;
-    int concentratedSpellCastLevel;
-
-    int level1SpellSlotMax = 4;
-    int level2SpellSlotMax = 2;
-
-    std::map<int, int> spellSlots = SpellCasting::MaximumSpellPoints::Sorcerer[3];
-
-    int sorcererPoints = 3;
-
-
-
-    int getAbilityModifier(Ability ability)
-    {
-        return (this->abilityScores[ability] - 10) / 2;
-    }
-
-    int getSpellSaveDc()
-    {
-        return 8 + getAbilityModifier(spellcastingAbility) + proficiencyBonus;
-    }
-
-    bool isProficientWithWeapon(Weapons::Weapon weapon)
-    {
-        bool characterProficientWithWeaponCategory = false;
-        bool characterProficientWithWeapon = false;
-
-        characterProficientWithWeaponCategory = std::find(weaponCategoryProficiencies.begin(), weaponCategoryProficiencies.end(), weapon.category) != weaponCategoryProficiencies.end();
-
-        if (!characterProficientWithWeaponCategory)
-        {
-            characterProficientWithWeapon = std::find(weaponProficiencies.begin(), weaponProficiencies.end(), weapon) != weaponProficiencies.end();
-        }
-
-        return characterProficientWithWeapon || characterProficientWithWeaponCategory;
-    }
-
-    bool castSpell(Spell spell)
-    {
-        if (!spell.requiresConcentration)
-        {
-            breakConcentration();
-        }
-
-        //Do you have enough spell slots of at least the spell's level
-        bool haveSpellSlotsToCastSpell = false;
-        int lowestViableSpellSlot = spell.level;
-
-        for (int i = spell.level; i <= 9; ++i)
-        {
-            if (spellSlots[i] > 0) {
-                haveSpellSlotsToCastSpell = true;
-                lowestViableSpellSlot = i;
-                break;
-            }
-        }
-
-        if (!haveSpellSlotsToCastSpell) {
-            return(false);
-        }
-
-
-        if (concentratedSpell != spell && spell.level != 0)
-        {
-            int userSelectedLevel = 0;
-            //TODO: Set max here to be player's highest available spell level?
-            std::cout << "What level are you casting at? (" << lowestViableSpellSlot << "-9" << ")\n";
-            userSelectedLevel = userInputIntInRange(lowestViableSpellSlot, 9);
-
-            //Can the player cast the spell at the requested level?
-            while (spellSlots[userSelectedLevel] == 0)
-            {
-                std::cout << "No level " << userSelectedLevel << " spell slots available\n";
-                std::cout << "What level are you casting at? (" << lowestViableSpellSlot << "-9" << ")\n";
-                userSelectedLevel = userInputIntInRange(lowestViableSpellSlot, 9);
-            }
-
-            concentratedSpellCastLevel = userSelectedLevel;
-            spellSlots[userSelectedLevel]--;
-
-        }
-
-        spell.cast(spell, *this);
-
-        return true;
-    }
-
-    int rangedSpellAttack(bool enemiesWithin5Feet)
-    {        
-        int spellAttackBonus = getAbilityModifier(spellcastingAbility) + proficiencyBonus;
-
-        return spellAttackBonus + (enemiesWithin5Feet ? rollDiceWithDisadvantage("1d20") : rollDice("1d20"));
-    }
-
-    void breakConcentration()
-    {
-        this->concentratedSpell = {};
-        this->concentratedSpellCastLevel = 0;
-    }
-
-    //TODO: I think this should be moved to a CharacterClass class/struct
-    IndividuatedDiceRoll rollIndividuatedSpellDamage(int p_numberOfDice, int p_sizeOfDice, int p_plusNumber)
-    {
-        IndividuatedDiceRoll damageRolls = IndividuatedDiceRoll(p_numberOfDice, p_sizeOfDice, p_plusNumber);
-
-        if (sorcererPoints > 0)
-        {
-            int maxRerollableDice = std::min(getAbilityModifier(Ability::charisma), p_numberOfDice);
-            //TODO: Actually check if the character has Empowered Spell
-            std::cout << damageRolls.print() << "\n";
-            std::cout << "Use Empowered Spell to reroll up to " << maxRerollableDice << " damage dice? (Y/N)\n";
-            bool playerWantsToRerollDamage = userInputYesNo();
-
-            if (playerWantsToRerollDamage)
-            {
-                sorcererPoints--;
-
-                std::cout << "How many dice do you want to reroll? (1-" << maxRerollableDice << ")\n";
-                int diceToReroll = userInputIntInRange(1, maxRerollableDice);
-
-                std::vector<int> diceToRerollIndices;
-
-                if (diceToReroll != damageRolls.numberOfDice)
-                {
-                    while (diceToRerollIndices.size() < diceToReroll)
-                    {
-                        std::cout << "Which die do you want to reroll?\n";
-                        int indexOfDiceToReroll = userInputIntInRange(1, damageRolls.numberOfDice);
-
-                        //Only do this if the vector doesn't alread contain this value
-                        if (std::count(diceToRerollIndices.begin(), diceToRerollIndices.end(), indexOfDiceToReroll - 1) == 0)
-                        {
-                            diceToRerollIndices.push_back(indexOfDiceToReroll - 1);
-                            std::cout << "Die " << std::to_string(indexOfDiceToReroll) << " marked for reroll\n";
-                        }
-                        else
-                        {
-                            std::cout << "Die " << std::to_string(indexOfDiceToReroll) << " is already marked for reroll\n";
-                        }
-                    }
-
-                    damageRolls.rerollSpecificDice(diceToRerollIndices);
-                }
-                else
-                {
-                    damageRolls.reroll();
-                }
-            }
-        }
-
-        return damageRolls;
-    }
-
-    int rollSummedSpellDamage()
-    {
-
-    }
-};
-
-void castWitchBolt(Spell spell, Character& character) 
+void castWitchBolt(Spell spell, Characters::Character& character) 
 {
     if (character.concentratedSpell == spell)
     {
-        std::cout << rollDice("1d12") << " lightning damage\n";
+        std::cout << Chance::rollDice("1d12") << " lightning damage\n";
     }
     else
     {
@@ -352,7 +102,7 @@ void castWitchBolt(Spell spell, Character& character)
 
             for (int i = 0; i < character.concentratedSpellCastLevel; i++)
             {
-                damageRoll += rollDice("1d12");
+                damageRoll += Chance::rollDice("1d12");
             }
 
             std::cout << damageRoll << " lightning damage\n";
@@ -366,10 +116,10 @@ void castWitchBolt(Spell spell, Character& character)
     }
 }
 
-void castMagicMissile(Spell spell, Character& character) 
+void castMagicMissile(Spell spell, Characters::Character& character) 
 {
     //TODO: Mike Mearls says as written, magic missile uses one dice roll for damage
-    IndividuatedDiceRoll damageRolls = character.rollIndividuatedSpellDamage((character.concentratedSpellCastLevel + 2), 4, 1);
+    auto damageRolls = character.rollIndividuatedSpellDamage((character.concentratedSpellCastLevel + 2), 4, 1);
 
     for (int i = 0; i < damageRolls.numberOfDice; ++i)
     {
@@ -377,7 +127,7 @@ void castMagicMissile(Spell spell, Character& character)
     }
 }
 
-void castIceKnife(Spell spell, Character& character)
+void castIceKnife(Spell spell, Characters::Character& character)
 {
     std::cout << "Are there any enemies within 5' of you? (Y/N)\n";
     int attackRoll = character.rangedSpellAttack(userInputYesNo());
@@ -385,12 +135,12 @@ void castIceKnife(Spell spell, Character& character)
     std::cout << "Rolled " << attackRoll << " to attack\n" << "Hit? (Y/N)" << "\n";
     if (userInputYesNo())
     {
-        std::cout << "Target takes " << rollDice("1d10") << " piercing damage\n";
-        std::cout << "Target and all creatures within 5\' of target must beat a dexterity save of " << character.getSpellSaveDc() << " or take " << rollDice(std::to_string(character.concentratedSpellCastLevel + 1) + "d6") << " cold damage\n";
+        std::cout << "Target takes " << Chance::rollDice("1d10") << " piercing damage\n";
+        std::cout << "Target and all creatures within 5\' of target must beat a dexterity save of " << character.getSpellSaveDc() << " or take " << Chance::rollDice(std::to_string(character.concentratedSpellCastLevel + 1) + "d6") << " cold damage\n";
     }
 }
 
-void castRayOfFrost(Spell spell, Character& character)
+void castRayOfFrost(Spell spell, Characters::Character& character)
 {
     std::cout << "Are there any enemies within 5' of you? (Y/N)\n";
     int attackRoll = character.rangedSpellAttack(userInputYesNo());
@@ -398,7 +148,7 @@ void castRayOfFrost(Spell spell, Character& character)
     std::cout << "Rolled " << attackRoll << " to attack\n" << "Hit? (Y/N)" << "\n";
     if (userInputYesNo())
     {
-        std::cout << "Target takes " << rollDice("1d8") << " cold damage and speed is reduced by 10\' until next turn\n";
+        std::cout << "Target takes " << Chance::rollDice("1d8") << " cold damage and speed is reduced by 10\' until next turn\n";
     }
 }
 
@@ -423,7 +173,7 @@ int main()
     std::vector<Weapons::Weapon> weapons;
     std::vector<std::string> weaponNames;
 
-    Character character = {};
+    Characters::Character character = {};
     character.spellcastingAbility = Ability::charisma;
     character.abilityScores[Ability::strength] = 15;
     character.abilityScores[Ability::dexterity] = 12;
@@ -601,12 +351,12 @@ int main()
                 if (selectedWeapon.isRanged && areEnemiesWithin5Feet)
                 {
                     std::cout << "Rolling to attack with disadvantage\n";
-                    attackRollDiceResult = rollDiceWithDisadvantage("1d20");
+                    attackRollDiceResult = Chance::rollDiceWithDisadvantage("1d20");
                 }
                 else
                 {
                     std::cout << "Rolling to attack\n";
-                    attackRollDiceResult = rollDice("1d20");
+                    attackRollDiceResult = Chance::rollDice("1d20");
                 }
 
                 std::cout << "Rolled " << attackRollDiceResult << "\n";
@@ -628,7 +378,7 @@ int main()
                 if (userInputYesNo())
                 {
                     std::cout << "Rolling damage\n";
-                    int damageRoll = rollDice(selectedWeapon.damage);
+                    int damageRoll = Chance::rollDice(selectedWeapon.damage);
                     std::cout << "Rolled " << damageRoll << "\n";
 
                     std::cout << "Adding " << Ability_str(attackAbility) << " modifier\n";

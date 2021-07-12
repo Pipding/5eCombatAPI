@@ -139,9 +139,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="chance\Dice.cpp" />
     <ClCompile Include="Gameover.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="chance\Dice.h" />
+    <ClInclude Include="classes\Character.cpp" />
+    <ClInclude Include="classes\Character.h" />
     <ClInclude Include="classes\Spell.h" />
     <ClInclude Include="classes\Weapon.h" />
     <ClInclude Include="data\SpellSlotMaximum.h" />
