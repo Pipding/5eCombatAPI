@@ -1,3 +1,3 @@
 #pragma once
 
-enum SpellComponent { verbal, somatic, material };
+enum class SpellComponent { verbal, somatic, material };

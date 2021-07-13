@@ -138,7 +138,7 @@ int main()
     dagger.isRanged = false;
     dagger.category = Weapons::WeaponCategory::simple;
     dagger.damage = "1d4";
-    dagger.damageType = piercing;
+    dagger.damageType = DamageType::piercing;
     dagger.properties.push_back(Weapons::WeaponProperty::finesse);
     dagger.properties.push_back(Weapons::WeaponProperty::light);
     dagger.properties.push_back(Weapons::WeaponProperty::range);
@@ -149,7 +149,7 @@ int main()
     rapier.isRanged = false;
     rapier.category = Weapons::WeaponCategory::martial;
     rapier.damage = "1d8";
-    rapier.damageType = piercing;
+    rapier.damageType = DamageType::piercing;
     rapier.properties.push_back(Weapons::WeaponProperty::finesse);
 
     Weapons::Weapon light_crossbow = {};
@@ -157,7 +157,7 @@ int main()
     light_crossbow.isRanged = true;
     light_crossbow.category = Weapons::WeaponCategory::simple;
     light_crossbow.damage = "1d8";
-    light_crossbow.damageType = piercing;
+    light_crossbow.damageType = DamageType::piercing;
     light_crossbow.properties.push_back(Weapons::WeaponProperty::loading);
     light_crossbow.properties.push_back(Weapons::WeaponProperty::range);
     light_crossbow.properties.push_back(Weapons::WeaponProperty::two_handed);
@@ -182,7 +182,7 @@ int main()
     witch_bolt.level = 1;
     witch_bolt.castingTime = 1;
     witch_bolt.range = 30;
-    witch_bolt.components = { verbal, somatic, material };
+    witch_bolt.components = { SpellComponent::verbal, SpellComponent::somatic, SpellComponent::material };
     witch_bolt.duration = 60;
     witch_bolt.requiresConcentration = true;
     witch_bolt.cast = castWitchBolt;
@@ -194,7 +194,7 @@ int main()
     magic_missile.level = 1;
     magic_missile.castingTime = 1;
     magic_missile.range = 120;
-    magic_missile.components = { verbal, somatic };
+    magic_missile.components = { SpellComponent::verbal, SpellComponent::somatic };
     magic_missile.duration = 0;
     magic_missile.requiresConcentration = false;
     magic_missile.cast = castMagicMissile;
@@ -206,7 +206,7 @@ int main()
     ice_knife.level = 1;
     ice_knife.castingTime = 1;
     ice_knife.range = 60;
-    ice_knife.components = { somatic, material };
+    ice_knife.components = { SpellComponent::somatic, SpellComponent::material };
     ice_knife.duration = 0;
     ice_knife.requiresConcentration = false;
     ice_knife.cast = castIceKnife;
@@ -218,7 +218,7 @@ int main()
     ray_of_frost.level = 0;
     ray_of_frost.castingTime = 1;
     ray_of_frost.range = 60;
-    ray_of_frost.components = { verbal, somatic };
+    ray_of_frost.components = { SpellComponent::verbal, SpellComponent::somatic };
     ray_of_frost.duration = 0;
     ray_of_frost.requiresConcentration = false;
     ray_of_frost.cast = castRayOfFrost;

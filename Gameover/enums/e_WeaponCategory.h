@@ -2,5 +2,5 @@
 
 namespace Weapons
 {
-	enum WeaponCategory { simple, martial };
+	enum class WeaponCategory { simple, martial };
 }
