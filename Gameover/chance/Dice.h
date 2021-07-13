@@ -6,6 +6,7 @@
 
 namespace Chance
 {
+    void initialize();
 	int rollDice(std::string diceRollString);
 	int rollDiceWithAdvantage(std::string diceRollString);
 	int rollDiceWithDisadvantage(std::string diceRollString);

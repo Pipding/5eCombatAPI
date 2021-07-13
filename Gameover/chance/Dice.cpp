@@ -1,4 +1,5 @@
 #include "Dice.h"
+#include <time.h>
 
 namespace Chance
 {
@@ -16,6 +17,11 @@ namespace Chance
         z = t ^ x ^ y;
 
         return z;
+    }
+
+    void initialize() {
+        srand(time(NULL));
+        x = rand();
     }
 
     int rollDice(std::string diceRollString)
@@ -37,8 +43,6 @@ namespace Chance
 
         for (int i = 0; i < diceQuantity; i++)
         {
-
-            //totalDiceRoll += (rand() % diceType + 1);
             totalDiceRoll += (xorshf96() % diceType + 1);
         }
 

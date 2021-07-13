@@ -22,7 +22,6 @@
 
 void castWitchBolt(SpellCasting::Spell* spell, Characters::Character* character) 
 {
-    
     if (character->concentratedSpell == spell)
     {
         std::cout << Chance::rollDice("1d12") << " lightning damage\n";
@@ -92,8 +91,7 @@ void castRayOfFrost(SpellCasting::Spell* spell, Characters::Character* character
 
 int main()
 {
-    
-    srand(time(NULL));
+    Chance::initialize();
 
     //Randomness testing
     //std::map<int, int> diceResults;
