@@ -17,6 +17,7 @@
 #include "chance/Dice.h"
 #include "classes/Character.cpp"
 #include "data/SpellSlotMaximum.h"
+#include "data/Weapons.h"
 #include "input/CmdInput.h"
 
 void castWitchBolt(SpellCasting::Spell* spell, Characters::Character* character) 
@@ -132,39 +133,9 @@ int main()
     character.abilityScores[Ability::charisma] = 18;
     character.proficiencyBonus = 2;
 
-
-    Weapons::Weapon dagger = {};
-    dagger.name = "Dagger";
-    dagger.isRanged = false;
-    dagger.category = Weapons::WeaponCategory::simple;
-    dagger.damage = "1d4";
-    dagger.damageType = DamageType::piercing;
-    dagger.properties.push_back(Weapons::WeaponProperty::finesse);
-    dagger.properties.push_back(Weapons::WeaponProperty::light);
-    dagger.properties.push_back(Weapons::WeaponProperty::range);
-    dagger.properties.push_back(Weapons::WeaponProperty::thrown);
-
-    Weapons::Weapon rapier= {};
-    rapier.name = "Rapier";
-    rapier.isRanged = false;
-    rapier.category = Weapons::WeaponCategory::martial;
-    rapier.damage = "1d8";
-    rapier.damageType = DamageType::piercing;
-    rapier.properties.push_back(Weapons::WeaponProperty::finesse);
-
-    Weapons::Weapon light_crossbow = {};
-    light_crossbow.name = "Light Crossbow";
-    light_crossbow.isRanged = true;
-    light_crossbow.category = Weapons::WeaponCategory::simple;
-    light_crossbow.damage = "1d8";
-    light_crossbow.damageType = DamageType::piercing;
-    light_crossbow.properties.push_back(Weapons::WeaponProperty::loading);
-    light_crossbow.properties.push_back(Weapons::WeaponProperty::range);
-    light_crossbow.properties.push_back(Weapons::WeaponProperty::two_handed);
-
-    weapons.push_back(dagger);
-    weapons.push_back(rapier);
-    weapons.push_back(light_crossbow);
+    weapons.push_back(Weapons::dagger);
+    weapons.push_back(Weapons::rapier);
+    weapons.push_back(Weapons::light_crossbow);
 
     for (auto& wep : weapons)
     {
@@ -233,8 +204,9 @@ int main()
 
 
     //Character
-    character.weaponProficiencies.push_back(dagger);
-    character.weaponProficiencies.push_back(light_crossbow);
+    //character.weaponProficiencies.push_back(dagger);
+    character.weaponProficiencies.push_back(Weapons::dagger);
+    character.weaponProficiencies.push_back(Weapons::light_crossbow);
 
 
     while (running)
