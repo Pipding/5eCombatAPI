@@ -5,8 +5,6 @@
 #include "..\enums\e_SpellComponent.h"
 #include "Character.h"
 
-//struct Character;
-
 namespace SpellCasting {
     struct Spell
     {
@@ -19,7 +17,7 @@ namespace SpellCasting {
         bool requiresConcentration;
 
         //TODO: Refactor, spells shouldn't know about Characters. Other way around.
-        void(*cast)(Spell, Characters::Character&);
+        void(*cast)(Spell*, Characters::Character*);
 
         inline bool operator==(Spell* a) {
             if (this == NULL && a != NULL)
@@ -31,28 +29,14 @@ namespace SpellCasting {
                 return false;
         }
 
-        //inline bool operator==(Spell a) {
-        //    if (a.name == this->name)
-        //        return true;
-        //    else
-        //        return false;
-        //}
-
         inline bool operator!=(Spell* a) {
             if (this == NULL && a != NULL)
-                return false;
+                return true;
 
             if (a->name != this->name)
                 return true;
             else
                 return false;
         }
-
-        //inline bool operator!=(Spell a) {
-        //    if (a.name != this->name)
-        //        return true;
-        //    else
-        //        return false;
-        //}
     };
 }

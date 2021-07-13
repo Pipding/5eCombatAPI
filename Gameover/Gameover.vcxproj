@@ -140,7 +140,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="chance\Dice.cpp" />
-    <ClCompile Include="classes\Spell.cpp" />
     <ClCompile Include="Gameover.cpp" />
   </ItemGroup>
   <ItemGroup>

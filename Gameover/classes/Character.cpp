@@ -78,7 +78,7 @@ namespace Characters
 
         }
 
-        spell->cast(*spell, *this);
+        spell->cast(spell, this);
 
         return true;
     }
@@ -92,7 +92,7 @@ namespace Characters
 
     void Characters::Character::breakConcentration()
     {
-        this->concentratedSpell = {};
+        this->concentratedSpell = nullptr;
         this->concentratedSpellCastLevel = 0;
     }
 
