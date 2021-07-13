@@ -5,7 +5,7 @@ namespace SpellCasting
 {
     namespace MaximumSpellPoints 
     {
-        std::map<int, std::map<int, int> > Sorcerer = 
+        static std::map<int, std::map<int, int> > Sorcerer = 
         {
             { 1, 
                 { 

@@ -114,7 +114,7 @@ namespace Characters
                 sorcererPoints--;
 
                 std::cout << "How many dice do you want to reroll? (1-" << maxRerollableDice << ")\n";
-                int diceToReroll = UserInput::userInputIntInRange(1, maxRerollableDice);
+                unsigned int diceToReroll = UserInput::userInputIntInRange(1, maxRerollableDice);
 
                 std::vector<int> diceToRerollIndices;
 

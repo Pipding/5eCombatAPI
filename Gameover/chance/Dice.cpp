@@ -24,6 +24,7 @@ namespace Chance
         x = rand();
     }
 
+    //TODO: Something seems fishy about this. d4s seem to roll 4 too often
     int rollDice(std::string diceRollString)
     {
         int plusNumber = 0;

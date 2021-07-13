@@ -2,7 +2,7 @@
 
 enum class Ability { strength, dexterity, constitution, intelligence, wisdom, charisma };
 
-const char* Ability_str(Ability e)
+static const char* Ability_str(Ability e)
 {
 	//Lack of a default path in this switch is intentional. It will generate a warning if a case has been forgotten
 	switch (e)

@@ -15,99 +15,21 @@
 #include "classes/Spell.h"
 #include "classes/Weapon.h"
 #include "chance/Dice.h"
-#include "classes/Character.cpp"
 #include "data/SpellSlotMaximum.h"
 #include "data/Weapons.h"
 #include "input/CmdInput.h"
+#include "data/spells.h"
 
-void castWitchBolt(SpellCasting::Spell* spell, Characters::Character* character) 
-{
-    if (character->concentratedSpell == spell)
-    {
-        std::cout << Chance::rollDice("1d12") << " lightning damage\n";
-    }
-    else
-    {
-        std::cout << "Are there any enemies within 5' of you? (Y/N)\n";
-        int attackRoll = character->rangedSpellAttack(UserInput::userInputYesNo());
-
-        std::cout << "Rolled " << attackRoll << " to attack\n" << "Hit? (Y/N)" << "\n";
-        if (UserInput::userInputYesNo())
-        {
-            int damageRoll = 0;
-
-            for (int i = 0; i < character->concentratedSpellCastLevel; i++)
-            {
-                damageRoll += Chance::rollDice("1d12");
-            }
-
-            std::cout << damageRoll << " lightning damage\n";
-
-            if (character->concentratedSpell != spell)
-            {
-                character->concentratedSpell = spell;
-                std::cout << "Concentrating on " << spell->name << "\n";
-            }
-        }
-    }
-}
-
-void castMagicMissile(SpellCasting::Spell* spell, Characters::Character* character) 
-{
-    //TODO: Mike Mearls says as written, magic missile uses one dice roll for damage
-    auto damageRolls = character->rollIndividuatedSpellDamage((character->concentratedSpellCastLevel + 2), 4, 1);
-
-    for (int i = 0; i < damageRolls.numberOfDice; ++i)
-    {
-        std::cout << "Dart " << i + 1 << ": " << damageRolls.rolls[i] << " force damage\n";
-    }
-}
-
-void castIceKnife(SpellCasting::Spell* spell, Characters::Character* character)
-{
-    std::cout << "Are there any enemies within 5' of you? (Y/N)\n";
-    int attackRoll = character->rangedSpellAttack(UserInput::userInputYesNo());
-
-    std::cout << "Rolled " << attackRoll << " to attack\n" << "Hit? (Y/N)" << "\n";
-    if (UserInput::userInputYesNo())
-    {
-        std::cout << "Target takes " << Chance::rollDice("1d10") << " piercing damage\n";
-        std::cout << "Target and all creatures within 5\' of target must beat a dexterity save of " << character->getSpellSaveDc() << " or take " << Chance::rollDice(std::to_string(character->concentratedSpellCastLevel + 1) + "d6") << " cold damage\n";
-    }
-}
-
-void castRayOfFrost(SpellCasting::Spell* spell, Characters::Character* character)
-{
-    std::cout << "Are there any enemies within 5' of you? (Y/N)\n";
-    int attackRoll = character->rangedSpellAttack(UserInput::userInputYesNo());
-
-    std::cout << "Rolled " << attackRoll << " to attack\n" << "Hit? (Y/N)" << "\n";
-    if (UserInput::userInputYesNo())
-    {
-        std::cout << "Target takes " << Chance::rollDice("1d8") << " cold damage and speed is reduced by 10\' until next turn\n";
-    }
-}
-
+#include "classes/Character.cpp"
+#include "spells/WitchBolt.cpp"
+#include "spells/MagicMissile.cpp"
+#include "spells/IceKnife.cpp"
+#include "spells/RayOfFrost.cpp"
 
 int main()
 {
     Chance::initialize();
 
-    //Randomness testing
-    //std::map<int, int> diceResults;
-
-    //for (int i = 0; i < 10000000; i++)
-    //{
-    //    diceResults[Chance::rollDice("1d20")] += 1;
-    //}
-
-    //for (auto const& pair : diceResults) {
-    //    std::cout << "{" << pair.first << ": " << pair.second << "}\n";
-    //}
-
-
-    bool running = true;
-    bool continueWithConcentratedSpell;
     bool areEnemiesWithin5Feet = false;
     bool attackWithMagic = false;
     Ability attackAbility;
@@ -144,72 +66,25 @@ int main()
     //Spells
     std::vector<SpellCasting::Spell> spells;
     std::vector<std::string> spellNames;
-    
 
-    SpellCasting::Spell witch_bolt = {};
-    witch_bolt.name = "Witch Bolt";
-    witch_bolt.level = 1;
-    witch_bolt.castingTime = 1;
-    witch_bolt.range = 30;
-    witch_bolt.components = { SpellComponent::verbal, SpellComponent::somatic, SpellComponent::material };
-    witch_bolt.duration = 60;
-    witch_bolt.requiresConcentration = true;
-    witch_bolt.cast = castWitchBolt;
-
-    spells.push_back(witch_bolt);
-
-    SpellCasting::Spell magic_missile = {};
-    magic_missile.name = "Magic Missile";
-    magic_missile.level = 1;
-    magic_missile.castingTime = 1;
-    magic_missile.range = 120;
-    magic_missile.components = { SpellComponent::verbal, SpellComponent::somatic };
-    magic_missile.duration = 0;
-    magic_missile.requiresConcentration = false;
-    magic_missile.cast = castMagicMissile;
-
-    spells.push_back(magic_missile);
-
-    SpellCasting::Spell ice_knife = {};
-    ice_knife.name = "Ice Knife";
-    ice_knife.level = 1;
-    ice_knife.castingTime = 1;
-    ice_knife.range = 60;
-    ice_knife.components = { SpellComponent::somatic, SpellComponent::material };
-    ice_knife.duration = 0;
-    ice_knife.requiresConcentration = false;
-    ice_knife.cast = castIceKnife;
-
-    spells.push_back(ice_knife);
-
-    SpellCasting::Spell ray_of_frost = {};
-    ray_of_frost.name = "Ray of Frost";
-    ray_of_frost.level = 0;
-    ray_of_frost.castingTime = 1;
-    ray_of_frost.range = 60;
-    ray_of_frost.components = { SpellComponent::verbal, SpellComponent::somatic };
-    ray_of_frost.duration = 0;
-    ray_of_frost.requiresConcentration = false;
-    ray_of_frost.cast = castRayOfFrost;
-
-    spells.push_back(ray_of_frost);
+    spells.push_back(SpellCasting::Spells::witch_bolt);
+    spells.push_back(SpellCasting::Spells::magic_missile);
+    spells.push_back(SpellCasting::Spells::ice_knife);
+    spells.push_back(SpellCasting::Spells::ray_of_frost);
 
 
     for (auto& spell : spells)
     {
         spellNames.push_back(spell.name);
     }
-
-
+    
     //Character
-    //character.weaponProficiencies.push_back(dagger);
     character.weaponProficiencies.push_back(Weapons::dagger);
     character.weaponProficiencies.push_back(Weapons::light_crossbow);
 
 
-    while (running)
+    for(;;)
     {
-        //TODO: How to set concentrated spell in a way that sticks
         if (character.concentratedSpell != nullptr)
         {
             std::cout << "You're concentrating on " << character.concentratedSpell->name << ". Would you like to continue doing so?(Y/N)\n";
@@ -221,7 +96,6 @@ int main()
             }
             else
             {
-                //This fails to resolve
                 character.breakConcentration();
             }
         }
