@@ -1,77 +1,13 @@
+#include "Character.h"
+#include "Spell.h"
+#include "../input/CmdInput.h"
+
 #include <map>
 #include <vector>
 #include <iostream>
 
-#include "../enums/e_Ability.h"
-#include "../data/SpellSlotMaximum.h"
-
 namespace Characters
 {
-    bool is_number(const std::string& s)
-    {
-        std::string::const_iterator it = s.begin();
-        while (it != s.end() && std::isdigit(*it)) ++it;
-        return !s.empty() && it == s.end();
-    }
-
-    bool userInputYesNo()
-    {
-        std::vector<std::string> acceptableResponses = { "y", "yes", "n", "no" };
-        std::string userInputStr = "nil";
-
-        std::transform(userInputStr.begin(), userInputStr.end(), userInputStr.begin(),
-            [](unsigned char c) { return std::tolower(c); });
-
-        while (std::find(acceptableResponses.begin(), acceptableResponses.end(), userInputStr) == acceptableResponses.end())
-        {
-            std::cin >> userInputStr;
-        }
-
-        return userInputStr == "y" || userInputStr == "yes";
-    }
-
-    int userInputChoice(std::vector<std::string> choices)
-    {
-        std::string userInputStr;
-        int userSelection = -1;
-        for (int i = 0; i < choices.size(); i++)
-        {
-            std::cout << i << ": " << choices[i] << "\n";
-        }
-
-        while (userSelection < 0 || userSelection >= choices.size())
-        {
-            std::cin >> userInputStr;
-
-            if (is_number(userInputStr))
-            {
-                userSelection = atoi(userInputStr.c_str());
-            }
-        }
-
-        return userSelection;
-    }
-
-    int userInputIntInRange(int min, int max)
-    {
-        std::string userInputStr;
-        int userInputInt;
-
-        do {
-            do {
-                std::cin >> userInputStr;
-            } while (!is_number(userInputStr));
-
-            userInputInt = atoi(userInputStr.c_str());
-
-        } while (userInputInt < min || userInputInt > max);
-
-        return userInputInt;
-
-    }
-
-
-
     int Character::getAbilityModifier(Ability ability)
     {
         return (this->abilityScores[ability] - 10) / 2;
@@ -82,7 +18,7 @@ namespace Characters
         return 8 + getAbilityModifier(spellcastingAbility) + proficiencyBonus;
     }
 
-    bool Character::isProficientWithWeapon(Weapons::Weapon weapon)
+    bool Characters::Character::isProficientWithWeapon(Weapons::Weapon weapon)
     {
         bool characterProficientWithWeaponCategory = false;
         bool characterProficientWithWeapon = false;
@@ -97,18 +33,18 @@ namespace Characters
         return characterProficientWithWeapon || characterProficientWithWeaponCategory;
     }
 
-    bool Character::castSpell(Spell spell)
+    bool Characters::Character::castSpell(SpellCasting::Spell* spell)
     {
-        if (!spell.requiresConcentration)
+        if (!spell->requiresConcentration)
         {
             breakConcentration();
         }
 
         //Do you have enough spell slots of at least the spell's level
         bool haveSpellSlotsToCastSpell = false;
-        int lowestViableSpellSlot = spell.level;
+        int lowestViableSpellSlot = spell->level;
 
-        for (int i = spell.level; i <= 9; ++i)
+        for (int i = spell->level; i <= 9; ++i)
         {
             if (spellSlots[i] > 0) {
                 haveSpellSlotsToCastSpell = true;
@@ -122,19 +58,19 @@ namespace Characters
         }
 
 
-        if (concentratedSpell != spell && spell.level != 0)
+        if (concentratedSpell != spell && spell->level != 0)
         {
             int userSelectedLevel = 0;
             //TODO: Set max here to be player's highest available spell level?
             std::cout << "What level are you casting at? (" << lowestViableSpellSlot << "-9" << ")\n";
-            userSelectedLevel = userInputIntInRange(lowestViableSpellSlot, 9);
+            userSelectedLevel = UserInput::userInputIntInRange(lowestViableSpellSlot, 9);
 
             //Can the player cast the spell at the requested level?
             while (spellSlots[userSelectedLevel] == 0)
             {
                 std::cout << "No level " << userSelectedLevel << " spell slots available\n";
                 std::cout << "What level are you casting at? (" << lowestViableSpellSlot << "-9" << ")\n";
-                userSelectedLevel = userInputIntInRange(lowestViableSpellSlot, 9);
+                userSelectedLevel = UserInput::userInputIntInRange(lowestViableSpellSlot, 9);
             }
 
             concentratedSpellCastLevel = userSelectedLevel;
@@ -142,26 +78,26 @@ namespace Characters
 
         }
 
-        spell.cast(spell, *this);
+        spell->cast(*spell, *this);
 
         return true;
     }
 
-    int Character::rangedSpellAttack(bool enemiesWithin5Feet)
+    int Characters::Character::rangedSpellAttack(bool enemiesWithin5Feet)
     {
         int spellAttackBonus = getAbilityModifier(spellcastingAbility) + proficiencyBonus;
 
         return spellAttackBonus + (enemiesWithin5Feet ? Chance::rollDiceWithDisadvantage("1d20") : Chance::rollDice("1d20"));
     }
 
-    void Character::breakConcentration()
+    void Characters::Character::breakConcentration()
     {
         this->concentratedSpell = {};
         this->concentratedSpellCastLevel = 0;
     }
 
     //TODO: I think this should be moved to a CharacterClass class/struct
-    Chance::IndividuatedDiceRoll Character::rollIndividuatedSpellDamage(int p_numberOfDice, int p_sizeOfDice, int p_plusNumber)
+    Chance::IndividuatedDiceRoll Characters::Character::rollIndividuatedSpellDamage(int p_numberOfDice, int p_sizeOfDice, int p_plusNumber)
     {
         auto damageRolls = Chance::IndividuatedDiceRoll(p_numberOfDice, p_sizeOfDice, p_plusNumber);
 
@@ -171,14 +107,14 @@ namespace Characters
             //TODO: Actually check if the character has Empowered Spell
             std::cout << damageRolls.print() << "\n";
             std::cout << "Use Empowered Spell to reroll up to " << maxRerollableDice << " damage dice? (Y/N)\n";
-            bool playerWantsToRerollDamage = userInputYesNo();
+            bool playerWantsToRerollDamage = UserInput::userInputYesNo();
 
             if (playerWantsToRerollDamage)
             {
                 sorcererPoints--;
 
                 std::cout << "How many dice do you want to reroll? (1-" << maxRerollableDice << ")\n";
-                int diceToReroll = userInputIntInRange(1, maxRerollableDice);
+                int diceToReroll = UserInput::userInputIntInRange(1, maxRerollableDice);
 
                 std::vector<int> diceToRerollIndices;
 
@@ -187,7 +123,7 @@ namespace Characters
                     while (diceToRerollIndices.size() < diceToReroll)
                     {
                         std::cout << "Which die do you want to reroll?\n";
-                        int indexOfDiceToReroll = userInputIntInRange(1, damageRolls.numberOfDice);
+                        int indexOfDiceToReroll = UserInput::userInputIntInRange(1, damageRolls.numberOfDice);
 
                         //Only do this if the vector doesn't alread contain this value
                         if (std::count(diceToRerollIndices.begin(), diceToRerollIndices.end(), indexOfDiceToReroll - 1) == 0)
@@ -213,8 +149,8 @@ namespace Characters
         return damageRolls;
     }
 
-    int rollSummedSpellDamage()
-    {
+    //int rollSummedSpellDamage()
+    //{
 
-    }
+    //}
 }

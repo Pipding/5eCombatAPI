@@ -14,24 +14,24 @@
 #include "enums/e_WeaponCategory.h"
 #include "classes/Spell.h"
 #include "classes/Weapon.h"
+#include "chance/Dice.h"
 #include "classes/Character.cpp"
 #include "data/SpellSlotMaximum.h"
-#include "chance/Dice.h"
 #include "input/CmdInput.h"
 
-void castWitchBolt(Spell spell, Characters::Character& character) 
+void castWitchBolt(SpellCasting::Spell spell, Characters::Character& character) 
 {
-    if (character.concentratedSpell == spell)
+    if (*character.concentratedSpell == &spell)
     {
         std::cout << Chance::rollDice("1d12") << " lightning damage\n";
     }
     else
     {
         std::cout << "Are there any enemies within 5' of you? (Y/N)\n";
-        int attackRoll = character.rangedSpellAttack(Characters::userInputYesNo());
+        int attackRoll = character.rangedSpellAttack(UserInput::userInputYesNo());
 
         std::cout << "Rolled " << attackRoll << " to attack\n" << "Hit? (Y/N)" << "\n";
-        if (Characters::userInputYesNo())
+        if (UserInput::userInputYesNo())
         {
             int damageRoll = 0;
 
@@ -42,16 +42,16 @@ void castWitchBolt(Spell spell, Characters::Character& character)
 
             std::cout << damageRoll << " lightning damage\n";
 
-            if (character.concentratedSpell != spell)
+            if (*character.concentratedSpell != &spell)
             {
-                character.concentratedSpell = spell;
+                *character.concentratedSpell = spell;
                 std::cout << "Concentrating on " << spell.name << "\n";
             }
         }
     }
 }
 
-void castMagicMissile(Spell spell, Characters::Character& character) 
+void castMagicMissile(SpellCasting::Spell spell, Characters::Character& character) 
 {
     //TODO: Mike Mearls says as written, magic missile uses one dice roll for damage
     auto damageRolls = character.rollIndividuatedSpellDamage((character.concentratedSpellCastLevel + 2), 4, 1);
@@ -62,26 +62,26 @@ void castMagicMissile(Spell spell, Characters::Character& character)
     }
 }
 
-void castIceKnife(Spell spell, Characters::Character& character)
+void castIceKnife(SpellCasting::Spell spell, Characters::Character& character)
 {
     std::cout << "Are there any enemies within 5' of you? (Y/N)\n";
-    int attackRoll = character.rangedSpellAttack(Characters::userInputYesNo());
+    int attackRoll = character.rangedSpellAttack(UserInput::userInputYesNo());
 
     std::cout << "Rolled " << attackRoll << " to attack\n" << "Hit? (Y/N)" << "\n";
-    if (Characters::userInputYesNo())
+    if (UserInput::userInputYesNo())
     {
         std::cout << "Target takes " << Chance::rollDice("1d10") << " piercing damage\n";
         std::cout << "Target and all creatures within 5\' of target must beat a dexterity save of " << character.getSpellSaveDc() << " or take " << Chance::rollDice(std::to_string(character.concentratedSpellCastLevel + 1) + "d6") << " cold damage\n";
     }
 }
 
-void castRayOfFrost(Spell spell, Characters::Character& character)
+void castRayOfFrost(SpellCasting::Spell spell, Characters::Character& character)
 {
     std::cout << "Are there any enemies within 5' of you? (Y/N)\n";
-    int attackRoll = character.rangedSpellAttack(Characters::userInputYesNo());
+    int attackRoll = character.rangedSpellAttack(UserInput::userInputYesNo());
 
     std::cout << "Rolled " << attackRoll << " to attack\n" << "Hit? (Y/N)" << "\n";
-    if (Characters::userInputYesNo())
+    if (UserInput::userInputYesNo())
     {
         std::cout << "Target takes " << Chance::rollDice("1d8") << " cold damage and speed is reduced by 10\' until next turn\n";
     }
@@ -93,20 +93,17 @@ int main()
     
     srand(time(NULL));
 
-    //UuUuUuUUuuUuUuuUuuuuUUUUUu
+    //Randomness testing
+    //std::map<int, int> diceResults;
 
-    std::map<int, int> diceResults;
+    //for (int i = 0; i < 10000000; i++)
+    //{
+    //    diceResults[Chance::rollDice("1d20")] += 1;
+    //}
 
-    for (int i = 0; i < 10000000; i++)
-    {
-        diceResults[Chance::rollDice("1d20")] += 1;
-    }
-
-    //std::cout << diceResults;
-
-    for (auto const& pair : diceResults) {
-        std::cout << "{" << pair.first << ": " << pair.second << "}\n";
-    }
+    //for (auto const& pair : diceResults) {
+    //    std::cout << "{" << pair.first << ": " << pair.second << "}\n";
+    //}
 
 
     bool running = true;
@@ -115,7 +112,7 @@ int main()
     bool attackWithMagic = false;
     Ability attackAbility;
     Weapons::Weapon selectedWeapon;
-    Spell selectedSpell;
+    SpellCasting::Spell selectedSpell;
     int attackRollDiceResult;
     int attackAbilityModifier;
     int attackRoll;
@@ -175,11 +172,11 @@ int main()
 
 
     //Spells
-    std::vector<Spell> spells;
+    std::vector<SpellCasting::Spell> spells;
     std::vector<std::string> spellNames;
     
 
-    Spell witch_bolt = {};
+    SpellCasting::Spell witch_bolt = {};
     witch_bolt.name = "Witch Bolt";
     witch_bolt.level = 1;
     witch_bolt.castingTime = 1;
@@ -191,7 +188,7 @@ int main()
 
     spells.push_back(witch_bolt);
 
-    Spell magic_missile = {};
+    SpellCasting::Spell magic_missile = {};
     magic_missile.name = "Magic Missile";
     magic_missile.level = 1;
     magic_missile.castingTime = 1;
@@ -203,7 +200,7 @@ int main()
 
     spells.push_back(magic_missile);
 
-    Spell ice_knife = {};
+    SpellCasting::Spell ice_knife = {};
     ice_knife.name = "Ice Knife";
     ice_knife.level = 1;
     ice_knife.castingTime = 1;
@@ -215,7 +212,7 @@ int main()
 
     spells.push_back(ice_knife);
 
-    Spell ray_of_frost = {};
+    SpellCasting::Spell ray_of_frost = {};
     ray_of_frost.name = "Ray of Frost";
     ray_of_frost.level = 0;
     ray_of_frost.castingTime = 1;
@@ -241,29 +238,30 @@ int main()
 
     while (running)
     {
-        if (character.concentratedSpell == witch_bolt)
+        if (*character.concentratedSpell == &witch_bolt)
         {
-            std::cout << "You're concentrating on " << character.concentratedSpell.name << ". Would you like to continue doing so?(Y/N)\n";
-            bool continueWithConcentratedSpell = Characters::userInputYesNo();
+            std::cout << "You're concentrating on " << character.concentratedSpell->name << ". Would you like to continue doing so?(Y/N)\n";
+            bool continueWithConcentratedSpell = UserInput::userInputYesNo();
 
             if (continueWithConcentratedSpell)
             {
-                character.castSpell(witch_bolt);
+                character.castSpell(&witch_bolt);
             }
             else
             {
+                //This fails to resolve
                 character.breakConcentration();
             }
         }
         else
         {
             std::cout << "What kind of attack is this?\n";
-            attackWithMagic = Characters::userInputChoice({ "Mundane", "Magic" });
+            attackWithMagic = UserInput::userInputChoice({ "Mundane", "Magic" });
 
             if (!attackWithMagic)
             {
                 std::cout << "Choose a weapon\n";
-                selectedWeapon = weapons[Characters::userInputChoice(weaponNames)];
+                selectedWeapon = weapons[UserInput::userInputChoice(weaponNames)];
                 std::cout << "Attacking with " << selectedWeapon.name << " ...\n";
 
                 //Set as defaults
@@ -290,13 +288,13 @@ int main()
 
                     std::cout << selectedWeapon.name << " is a finesse weapon, would you like to use strength(" << strModText << ") or dexterity(" << dexModText << ")?\n";
 
-                    attackAbility = finesseAbilities[Characters::userInputChoice(finesseAbilityNames)];
+                    attackAbility = finesseAbilities[UserInput::userInputChoice(finesseAbilityNames)];
                 }
 
                 if (selectedWeapon.isRanged)
                 {
                     std::cout << "Are there any enemies within 5' of you? (Y/N)\n";
-                    areEnemiesWithin5Feet = Characters::userInputYesNo();
+                    areEnemiesWithin5Feet = UserInput::userInputYesNo();
                 }
 
                 if (selectedWeapon.isRanged && areEnemiesWithin5Feet)
@@ -326,7 +324,7 @@ int main()
 
                 std::cout << "Rolled " << attackRoll << " to attack\n" << "Hit? (Y/N)" << "\n";
 
-                if (Characters::userInputYesNo())
+                if (UserInput::userInputYesNo())
                 {
                     std::cout << "Rolling damage\n";
                     int damageRoll = Chance::rollDice(selectedWeapon.damage);
@@ -341,9 +339,9 @@ int main()
             else
             {
                 std::cout << "Choose a spell\n";
-                selectedSpell = spells[Characters::userInputChoice(spellNames)];
+                selectedSpell = spells[UserInput::userInputChoice(spellNames)];
 
-                if (!character.castSpell(selectedSpell))
+                if (!character.castSpell(&selectedSpell))
                 {
                     std::cout << "Failed to cast " << selectedSpell.name << "\n";
                 }

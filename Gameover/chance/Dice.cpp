@@ -18,7 +18,7 @@ namespace Chance
         return z;
     }
 
-    static int rollDice(std::string diceRollString)
+    int rollDice(std::string diceRollString)
     {
         int plusNumber = 0;
         int diceType = 0;
@@ -50,7 +50,7 @@ namespace Chance
         return std::max(rollDice(diceRollString), rollDice(diceRollString));
     }
 
-	static int rollDiceWithDisadvantage(std::string diceRollString)
+	int rollDiceWithDisadvantage(std::string diceRollString)
 	{
 		return std::min(rollDice(diceRollString), rollDice(diceRollString));
 	}

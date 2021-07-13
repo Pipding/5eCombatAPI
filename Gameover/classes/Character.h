@@ -1,8 +1,15 @@
 #pragma once
 
-#include "Spell.h"
+//#include "Spell.h"
 #include "Weapon.h"
+#include "../data/SpellSlotMaximum.h"
+#include "../enums/e_Ability.h"
 #include "../chance/Dice.h"
+
+namespace SpellCasting
+{
+	struct Spell;
+}
 
 namespace Characters
 {
@@ -14,8 +21,7 @@ namespace Characters
 		int proficiencyBonus;
 		std::vector<Weapons::WeaponCategory> weaponCategoryProficiencies;
 		std::vector<Weapons::Weapon> weaponProficiencies;
-		int bastardTime;
-		Spell concentratedSpell;
+		SpellCasting::Spell* concentratedSpell;
 		int concentratedSpellCastLevel;
 
 		int level1SpellSlotMax = 4;
@@ -28,7 +34,7 @@ namespace Characters
 		int getAbilityModifier(Ability ability);
 		int getSpellSaveDc();
 		bool isProficientWithWeapon(Weapons::Weapon weapon);
-		bool castSpell(Spell spell);
+		bool castSpell(SpellCasting::Spell* spell);
 		int rangedSpellAttack(bool enemiesWithin5Feet);
 		void breakConcentration();
 		Chance::IndividuatedDiceRoll rollIndividuatedSpellDamage(int p_numberOfDice, int p_sizeOfDice, int p_plusNumber);
