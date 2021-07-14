@@ -16,10 +16,13 @@
 #include "classes/Weapon.h"
 #include "chance/Dice.h"
 #include "data/SpellSlotMaximum.h"
-#include "data/Weapons.h"
 #include "input/CmdInput.h"
+
 #include "data/spells.h"
 #include "data/spells.cpp"
+
+#include "data/Weapons.h"
+#include "data/Weapons.cpp"
 
 #include "classes/Character.cpp"
 #include "spells/WitchBolt.cpp"
@@ -38,7 +41,7 @@ int main()
     int attackRoll;
 
     //Weapons
-    std::vector<Weapons::Weapon> weapons;
+    //std::vector<Weapons::Weapon> weapons;
     std::vector<std::string> weaponNames;
 
     Characters::Character character = {};
@@ -51,11 +54,11 @@ int main()
     character.abilityScores[Ability::charisma] = 18;
     character.proficiencyBonus = 2;
 
-    weapons.push_back(Weapons::dagger);
-    weapons.push_back(Weapons::rapier);
-    weapons.push_back(Weapons::light_crossbow);
+    //weapons.push_back(Weapons::dagger);
+    //weapons.push_back(Weapons::rapier);
+    //weapons.push_back(Weapons::light_crossbow);
 
-    for (auto& wep : weapons)
+    for (auto& wep : Weapons::AllWeapons)
     {
         weaponNames.push_back(wep.name);
     }
@@ -97,7 +100,7 @@ int main()
             if (!attackWithMagic)
             {
                 std::cout << "Choose a weapon\n";
-                selectedWeapon = weapons[UserInput::userInputChoice(weaponNames)];
+                selectedWeapon = Weapons::AllWeapons[UserInput::userInputChoice(weaponNames)];
                 std::cout << "Attacking with " << selectedWeapon.name << " ...\n";
 
                 //Set as defaults
@@ -127,23 +130,20 @@ int main()
                     attackAbility = finesseAbilities[UserInput::userInputChoice(finesseAbilityNames)];
                 }
 
+                // This happens once here because it's more concise. 
+                // It feels weird since rolling disadvantage for a ranged attack technically rolls 3 times, but the first would be discarded so it's ok?
+                attackRollDiceResult = Chance::rollDice("1d20");
+
                 if (selectedWeapon.isRanged)
                 {
                     std::cout << "Are there any enemies within 5' of you? (Y/N)\n";
                     
-
                     if(UserInput::userInputYesNo())
                     {
                         std::cout << "Rolling to attack with disadvantage\n";
                         attackRollDiceResult = Chance::rollDiceWithDisadvantage("1d20");
                     }
-                    else
-                    {
-                        std::cout << "Rolling to attack\n";
-                        attackRollDiceResult = Chance::rollDice("1d20");
-                    }
                 }
-                
 
                 std::cout << "Rolled " << attackRollDiceResult << "\n";
 

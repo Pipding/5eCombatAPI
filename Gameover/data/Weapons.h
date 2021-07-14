@@ -4,7 +4,7 @@
 
 namespace Weapons
 {
-    Weapons::Weapon dagger = { 
+    static Weapons::Weapon dagger = { 
         "Dagger", 
         false, 
         Weapons::WeaponCategory::simple, 
@@ -19,7 +19,7 @@ namespace Weapons
     };
 
 
-    Weapons::Weapon light_crossbow = {
+    static Weapons::Weapon light_crossbow = {
         "Light Crossbow",
         true,
         Weapons::WeaponCategory::simple,
@@ -33,7 +33,7 @@ namespace Weapons
     };
 
 
-    Weapons::Weapon rapier = {
+    static Weapons::Weapon rapier = {
         "Rapier",
         false,
         Weapons::WeaponCategory::martial,
