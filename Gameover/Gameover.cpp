@@ -41,7 +41,6 @@ int main()
     int attackRoll;
 
     //Weapons
-    //std::vector<Weapons::Weapon> weapons;
     std::vector<std::string> weaponNames;
 
     Characters::Character character = {};
@@ -53,10 +52,6 @@ int main()
     character.abilityScores[Ability::wisdom] = 10;
     character.abilityScores[Ability::charisma] = 18;
     character.proficiencyBonus = 2;
-
-    //weapons.push_back(Weapons::dagger);
-    //weapons.push_back(Weapons::rapier);
-    //weapons.push_back(Weapons::light_crossbow);
 
     for (auto& wep : Weapons::AllWeapons)
     {
