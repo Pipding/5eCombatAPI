@@ -10,7 +10,7 @@ namespace SpellCasting
 {
     namespace Spells {
 
-        SpellCasting::Spell witch_bolt =
+        static SpellCasting::Spell witch_bolt =
         {
             "Witch Bolt",
             1,
@@ -27,7 +27,7 @@ namespace SpellCasting
         };
 
 
-        SpellCasting::Spell magic_missile =
+        static SpellCasting::Spell magic_missile =
         {
             "Magic Missile",
             1,
@@ -43,7 +43,7 @@ namespace SpellCasting
         };
 
 
-        SpellCasting::Spell ice_knife = {
+        static SpellCasting::Spell ice_knife = {
             "Ice Knife",
             1,
             1,
@@ -58,7 +58,7 @@ namespace SpellCasting
         };
 
 
-        SpellCasting::Spell ray_of_frost = {
+        static SpellCasting::Spell ray_of_frost = {
             "Ray of Frost",
             0,
             1,

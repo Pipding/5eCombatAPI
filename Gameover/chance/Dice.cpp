@@ -5,6 +5,8 @@ namespace Chance
 {
     static unsigned long x = 123456789, y = 362436069, z = 521288629;
 
+    static bool initialized = false;
+
     unsigned long xorshf96(void) {          //period 2^96-1
         unsigned long t;
         x ^= x << 16;
@@ -22,11 +24,18 @@ namespace Chance
     void initialize() {
         srand(time(NULL));
         x = rand();
+        initialized = true;
     }
 
     //TODO: Something seems fishy about this. d4s seem to roll 4 too often
     int rollDice(std::string diceRollString)
     {
+        // TODO: Come up with a better solution than this
+        if (!initialized)
+        {
+            initialize();
+        }
+
         int plusNumber = 0;
         int diceType = 0;
         int diceQuantity = 0;
