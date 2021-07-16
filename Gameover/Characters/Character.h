@@ -16,7 +16,7 @@ namespace Characters
 	struct Character {
 
 		//CharacterClass characterClass;
-		Ability spellcastingAbility;
+		Ability spellcastingAbility; // TODO: Spellcasting ability could be a property of class
 		std::map<Ability, int> abilityScores;
 		int proficiencyBonus;
 		std::vector<Weapons::WeaponCategory> weaponCategoryProficiencies;

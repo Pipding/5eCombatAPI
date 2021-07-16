@@ -1,9 +1,15 @@
 #include "Character.h"
 #include "../input/CmdInput.h"
 
+#include "../vendor/nlohmann/json.hpp"
+
 #include <map>
 #include <vector>
 #include <iostream>
+#include <fstream>
+
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
 
 namespace Characters
 {
