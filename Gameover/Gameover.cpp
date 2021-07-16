@@ -12,23 +12,23 @@
 #include "enums/e_DamageType.h"
 #include "enums/e_WeaponProperty.h"
 #include "enums/e_WeaponCategory.h"
-#include "classes/Spell.h"
-#include "classes/Weapon.h"
+#include "SpellCasting/Spell.h"
+#include "Weapons/Weapon.h"
 #include "chance/Dice.h"
-#include "data/SpellSlotMaximum.h"
+#include "SpellCasting/SpellSlotMaximum.h"
 #include "input/CmdInput.h"
 
-#include "data/spells.h"
-#include "data/spells.cpp"
+#include "SpellCasting/spells.h"
+#include "SpellCasting/spells.cpp"
 
-#include "data/Weapons.h"
-#include "data/Weapons.cpp"
+#include "Weapons/Weapons.h"
+#include "Weapons/Weapons.cpp"
 
-#include "classes/Character.cpp"
-#include "spells/WitchBolt.cpp"
-#include "spells/MagicMissile.cpp"
-#include "spells/IceKnife.cpp"
-#include "spells/RayOfFrost.cpp"
+#include "Characters/Character.cpp"
+#include "SpellCasting/WitchBolt.cpp"
+#include "SpellCasting/MagicMissile.cpp"
+#include "SpellCasting/IceKnife.cpp"
+#include "SpellCasting/RayOfFrost.cpp"
 
 int main()
 {

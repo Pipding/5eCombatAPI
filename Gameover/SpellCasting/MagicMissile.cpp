@@ -3,8 +3,7 @@
 
 #include <iostream>
 
-#include "../classes/Character.h"
-#include "../classes/Spell.h"
+#include "Spell.h"
 #include "../input/CmdInput.h"
 
 namespace SpellCasting

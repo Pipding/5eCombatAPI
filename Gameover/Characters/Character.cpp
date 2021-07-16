@@ -1,5 +1,4 @@
 #include "Character.h"
-#include "Spell.h"
 #include "../input/CmdInput.h"
 
 #include <map>

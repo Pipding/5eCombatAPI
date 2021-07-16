@@ -3,9 +3,10 @@
 #include <vector>
 
 #include "..\enums\e_SpellComponent.h"
-#include "Character.h"
+#include "..\Characters\Character.h"
 
-namespace SpellCasting {
+namespace SpellCasting 
+{
     struct Spell
     {
         std::string name;

@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../classes/Spell.h"
-#include "../spells/WitchBolt.cpp"
-#include "../spells/MagicMissile.cpp"
-#include "../spells/IceKnife.cpp"
-#include "../spells/RayOfFrost.cpp"
+#include "Spell.h"
+#include "WitchBolt.cpp"
+#include "MagicMissile.cpp"
+#include "IceKnife.cpp"
+#include "RayOfFrost.cpp"
 
 namespace SpellCasting
 {

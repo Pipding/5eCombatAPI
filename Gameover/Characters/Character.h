@@ -1,8 +1,8 @@
 #pragma once
 
-//#include "Spell.h"
-#include "Weapon.h"
-#include "../data/SpellSlotMaximum.h"
+#include "../Weapons/Weapon.h"
+#include "../SpellCasting/Spell.h"
+#include "../SpellCasting/SpellSlotMaximum.h"
 #include "../enums/e_Ability.h"
 #include "../chance/Dice.h"
 

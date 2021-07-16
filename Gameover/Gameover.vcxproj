@@ -140,24 +140,24 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="chance\Dice.cpp" />
-    <ClCompile Include="data\Spells.cpp" />
-    <ClCompile Include="data\Weapons.cpp" />
+    <ClCompile Include="SpellCasting\Spells.cpp" />
+    <ClCompile Include="Weapons\Weapons.cpp" />
     <ClCompile Include="Gameover.cpp" />
     <ClCompile Include="input\CmdInput.cpp" />
-    <ClCompile Include="spells\IceKnife.cpp" />
-    <ClCompile Include="spells\MagicMissile.cpp" />
-    <ClCompile Include="spells\RayOfFrost.cpp" />
-    <ClCompile Include="spells\WitchBolt.cpp" />
+    <ClCompile Include="SpellCasting\IceKnife.cpp" />
+    <ClCompile Include="SpellCasting\MagicMissile.cpp" />
+    <ClCompile Include="SpellCasting\RayOfFrost.cpp" />
+    <ClCompile Include="SpellCasting\WitchBolt.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="chance\Dice.h" />
-    <ClInclude Include="classes\Character.cpp" />
-    <ClInclude Include="classes\Character.h" />
-    <ClInclude Include="classes\Spell.h" />
-    <ClInclude Include="classes\Weapon.h" />
-    <ClInclude Include="data\Spells.h" />
-    <ClInclude Include="data\SpellSlotMaximum.h" />
-    <ClInclude Include="data\Weapons.h" />
+    <ClInclude Include="Characters\Character.cpp" />
+    <ClInclude Include="Characters\Character.h" />
+    <ClInclude Include="SpellCasting\Spell.h" />
+    <ClInclude Include="Weapons\Weapon.h" />
+    <ClInclude Include="SpellCasting\Spells.h" />
+    <ClInclude Include="SpellCasting\SpellSlotMaximum.h" />
+    <ClInclude Include="Weapons\Weapons.h" />
     <ClInclude Include="enums\e_DamageType.h" />
     <ClInclude Include="enums\e_Ability.h" />
     <ClInclude Include="enums\e_CharacterClass.h" />

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../classes/Weapon.h"
+#include "Weapon.h"
 
 namespace Weapons
 {
