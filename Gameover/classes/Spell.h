@@ -16,7 +16,8 @@ namespace SpellCasting {
         int duration;
         bool requiresConcentration;
 
-        //TODO: Refactor, spells shouldn't know about Characters. Other way around.
+        //TODO: Refactor, spells shouldn't know about Characters. Other way around
+        //Although, if a spell can know about a Character is allows the spell's "cast" logic to be more self-contained, I think.
         void(*cast)(Spell*, Characters::Character*);
 
         inline bool operator==(Spell* a) {

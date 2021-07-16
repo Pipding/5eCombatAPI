@@ -69,6 +69,9 @@ int main()
     //Character
     character.weaponProficiencies.push_back(Weapons::dagger);
     character.weaponProficiencies.push_back(Weapons::light_crossbow);
+    character.weaponProficiencies.push_back(Weapons::dart);
+    character.weaponProficiencies.push_back(Weapons::quarterstaff);
+    character.weaponProficiencies.push_back(Weapons::sling);
 
 
     for(;;)

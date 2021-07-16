@@ -43,4 +43,39 @@ namespace Weapons
             Weapons::WeaponProperty::finesse
         }
     };
+
+    static Weapons::Weapon dart = {
+        "Dart",
+        true,
+        Weapons::WeaponCategory::simple,
+        "1d4",
+        DamageType::piercing,
+        {
+            Weapons::WeaponProperty::finesse,
+            Weapons::WeaponProperty::range,
+            Weapons::WeaponProperty::thrown
+        }
+    };
+
+    static Weapons::Weapon sling = {
+        "Sling",
+        true,
+        Weapons::WeaponCategory::simple,
+        "1d4",
+        DamageType::bludgeoning,
+        {
+            Weapons::WeaponProperty::range
+        }
+    };
+
+    static Weapons::Weapon quarterstaff = {
+        "Quarterstaff",
+        false,
+        Weapons::WeaponCategory::simple,
+        "1d6",
+        DamageType::bludgeoning,
+        {
+            Weapons::WeaponProperty::versatile
+        }
+    };
 }
