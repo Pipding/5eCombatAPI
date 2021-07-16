@@ -6,6 +6,8 @@
 #include <cctype>
 #include <functional>
 
+#include "vendor/nlohmann/json.hpp"
+
 #include "enums/e_Ability.h"
 #include "enums/e_CharacterClass.h"
 #include "enums/e_SpellComponent.h"

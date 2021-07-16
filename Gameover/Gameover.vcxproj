@@ -154,6 +154,7 @@
     <ClInclude Include="Characters\Character.cpp" />
     <ClInclude Include="Characters\Character.h" />
     <ClInclude Include="SpellCasting\Spell.h" />
+    <ClInclude Include="vendor\nlohmann\json.hpp" />
     <ClInclude Include="Weapons\Weapon.h" />
     <ClInclude Include="SpellCasting\Spells.h" />
     <ClInclude Include="SpellCasting\SpellSlotMaximum.h" />
@@ -165,6 +166,9 @@
     <ClInclude Include="enums\e_WeaponCategory.h" />
     <ClInclude Include="enums\e_WeaponProperty.h" />
     <ClInclude Include="input\CmdInput.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="vendor\nlohmann\LICENSE.MIT" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
