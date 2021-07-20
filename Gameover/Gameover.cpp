@@ -35,7 +35,7 @@
 int main()
 {
     bool attackWithMagic = false;
-    Ability attackAbility;
+    Abilities::Ability attackAbility;
     Weapons::Weapon selectedWeapon;
     SpellCasting::Spell selectedSpell;
     int attackRollDiceResult;
@@ -46,13 +46,13 @@ int main()
     std::vector<std::string> weaponNames;
 
     Characters::Character character = {};
-    character.spellcastingAbility = Ability::charisma;
-    character.abilityScores[Ability::strength] = 15;
-    character.abilityScores[Ability::dexterity] = 12;
-    character.abilityScores[Ability::constitution] = 15;
-    character.abilityScores[Ability::intelligence] = 12;
-    character.abilityScores[Ability::wisdom] = 10;
-    character.abilityScores[Ability::charisma] = 18;
+    character.spellcastingAbility = Abilities::Ability::charisma;
+    character.abilityScores[Abilities::Ability::strength] = 15;
+    character.abilityScores[Abilities::Ability::dexterity] = 12;
+    character.abilityScores[Abilities::Ability::constitution] = 15;
+    character.abilityScores[Abilities::Ability::intelligence] = 12;
+    character.abilityScores[Abilities::Ability::wisdom] = 10;
+    character.abilityScores[Abilities::Ability::charisma] = 18;
     character.proficiencyBonus = 2;
 
     for (auto& wep : Weapons::AllWeapons)
@@ -78,21 +78,7 @@ int main()
 
     for(;;)
     {
-        if (character.concentratedSpell != nullptr)
-        {
-            std::cout << "You're concentrating on " << character.concentratedSpell->name << ". Would you like to continue doing so?(Y/N)\n";
-            bool continueWithConcentratedSpell = UserInput::userInputYesNo();
-
-            if (continueWithConcentratedSpell)
-            {
-                character.castSpell(character.concentratedSpell);
-            }
-            else
-            {
-                character.breakConcentration();
-            }
-        }
-        else
+        if(!character.handleConcentratedSpell())
         {
             std::cout << "What kind of attack is this?\n";
             attackWithMagic = UserInput::userInputChoice({ "Mundane", "Magic" });
@@ -104,30 +90,25 @@ int main()
                 std::cout << "Attacking with " << selectedWeapon.name << " ...\n";
 
                 //Set as defaults
-                if (!selectedWeapon.isRanged)
-                {
-                    attackAbility = Ability::strength;
-                }
+                if (selectedWeapon.isRanged)
+                    attackAbility = Abilities::Ability::dexterity;
                 else
-                {
-                    attackAbility = Ability::dexterity;
-                }
+                    attackAbility = Abilities::Ability::strength;
+
+                
 
                 //Does weapon have finesse attribute?
-                if (std::find(selectedWeapon.properties.begin(), selectedWeapon.properties.end(), Weapons::WeaponProperty::finesse) != selectedWeapon.properties.end())
+                if (selectedWeapon.hasFinesseProperty())
                 {
-                    Ability finesseAbilities[2] = { Ability::strength, Ability::dexterity };
-                    std::vector<std::string> finesseAbilityNames = { "Strength", "Dexterity" };
-
-                    int strMod = character.getAbilityModifier(Ability::strength);
-                    int dexMod = character.getAbilityModifier(Ability::dexterity);
+                    int strMod = character.getAbilityModifier(Abilities::Ability::strength);
+                    int dexMod = character.getAbilityModifier(Abilities::Ability::dexterity);
 
                     std::string strModText = (strMod <= 0) ? (std::to_string(strMod)) : ("+" + std::to_string(strMod));
                     std::string dexModText = (dexMod <= 0) ? (std::to_string(dexMod)) : ("+" + std::to_string(dexMod));
 
                     std::cout << selectedWeapon.name << " is a finesse weapon, would you like to use strength(" << strModText << ") or dexterity(" << dexModText << ")?\n";
 
-                    attackAbility = finesseAbilities[UserInput::userInputChoice(finesseAbilityNames)];
+                    attackAbility = Abilities::Ability(UserInput::userInputChoice({"Strength", "Dexterity"})); //This only works because str = 0 and dex = 1
                 }
 
                 // This happens once here because it's more concise. 

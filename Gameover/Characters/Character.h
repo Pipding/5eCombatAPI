@@ -16,8 +16,8 @@ namespace Characters
 	struct Character {
 
 		//CharacterClass characterClass;
-		Ability spellcastingAbility; // TODO: Spellcasting ability could be a property of class
-		std::map<Ability, int> abilityScores;
+		Abilities::Ability spellcastingAbility; // TODO: Spellcasting ability could be a property of class
+		std::map<Abilities::Ability, int> abilityScores;
 		int proficiencyBonus;
 		std::vector<Weapons::WeaponCategory> weaponCategoryProficiencies;
 		std::vector<Weapons::Weapon> weaponProficiencies;
@@ -31,12 +31,13 @@ namespace Characters
 
 		int sorcererPoints = 3;
 
-		int getAbilityModifier(Ability ability);
+		int getAbilityModifier(Abilities::Ability ability);
 		int getSpellSaveDc();
 		bool isProficientWithWeapon(Weapons::Weapon weapon);
 		bool castSpell(SpellCasting::Spell* spell);
 		int rangedSpellAttack(bool enemiesWithin5Feet);
 		void breakConcentration();
+		bool handleConcentratedSpell();
 		Chance::IndividuatedDiceRoll rollIndividuatedSpellDamage(int p_numberOfDice, int p_sizeOfDice, int p_plusNumber);
 	};
 }

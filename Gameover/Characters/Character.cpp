@@ -13,7 +13,7 @@
 
 namespace Characters
 {
-    int Character::getAbilityModifier(Ability ability)
+    int Character::getAbilityModifier(Abilities::Ability ability)
     {
         return (this->abilityScores[ability] - 10) / 2;
     }
@@ -101,6 +101,27 @@ namespace Characters
         this->concentratedSpellCastLevel = 0;
     }
 
+    //Return true if a concentrated spell was handled
+    bool Character::handleConcentratedSpell()
+    {
+        if (concentratedSpell != nullptr)
+        {
+            std::cout << "You're concentrating on " << concentratedSpell->name << ". Would you like to continue doing so?(Y/N)\n";
+            bool continueWithConcentratedSpell = UserInput::userInputYesNo();
+
+            if (continueWithConcentratedSpell)
+            {
+                castSpell(concentratedSpell);
+            }
+            else
+            {
+                breakConcentration();
+            }
+            return true;
+        }
+        return false;
+    }
+
     //TODO: I think this should be moved to a CharacterClass class/struct
     Chance::IndividuatedDiceRoll Characters::Character::rollIndividuatedSpellDamage(int p_numberOfDice, int p_sizeOfDice, int p_plusNumber)
     {
@@ -108,7 +129,7 @@ namespace Characters
 
         if (sorcererPoints > 0)
         {
-            int maxRerollableDice = std::min(getAbilityModifier(Ability::charisma), p_numberOfDice);
+            int maxRerollableDice = std::min(getAbilityModifier(Abilities::Ability::charisma), p_numberOfDice);
             //TODO: Actually check if the character has Empowered Spell
             std::cout << damageRolls.print() << "\n";
             std::cout << "Use Empowered Spell to reroll up to " << maxRerollableDice << " damage dice? (Y/N)\n";

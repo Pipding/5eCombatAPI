@@ -23,5 +23,9 @@ namespace Weapons
             else
                 return false;
         }
+
+        inline bool hasFinesseProperty() {
+            return std::find(properties.begin(), properties.end(), Weapons::WeaponProperty::finesse) != properties.end();
+        }
     };
 }
